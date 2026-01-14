@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
+  <defs>
+    <linearGradient id="petalGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A8C5A8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C8D8C8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="petalPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5D5DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFEEF2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="centerGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FDFBF7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F5D5DC;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer petals (sage green) - back layer -->
+  <ellipse cx="100" cy="55" rx="18" ry="40" fill="url(#petalGreen)" transform="rotate(-30 100 90)" opacity="0.8"/>
+  <ellipse cx="100" cy="55" rx="18" ry="40" fill="url(#petalGreen)" transform="rotate(30 100 90)" opacity="0.8"/>
+  <ellipse cx="100" cy="55" rx="18" ry="40" fill="url(#petalGreen)" transform="rotate(-60 100 90)" opacity="0.7"/>
+  <ellipse cx="100" cy="55" rx="18" ry="40" fill="url(#petalGreen)" transform="rotate(60 100 90)" opacity="0.7"/>
+
+  <!-- Middle petals (soft pink) -->
+  <ellipse cx="100" cy="60" rx="15" ry="35" fill="url(#petalPink)" transform="rotate(-20 100 90)" opacity="0.9"/>
+  <ellipse cx="100" cy="60" rx="15" ry="35" fill="url(#petalPink)" transform="rotate(20 100 90)" opacity="0.9"/>
+  <ellipse cx="100" cy="60" rx="15" ry="35" fill="url(#petalPink)" transform="rotate(-45 100 90)" opacity="0.85"/>
+  <ellipse cx="100" cy="60" rx="15" ry="35" fill="url(#petalPink)" transform="rotate(45 100 90)" opacity="0.85"/>
+
+  <!-- Inner petals (lighter) -->
+  <ellipse cx="100" cy="65" rx="12" ry="28" fill="#FFEEF2" transform="rotate(-10 100 90)" opacity="0.95"/>
+  <ellipse cx="100" cy="65" rx="12" ry="28" fill="#FFEEF2" transform="rotate(10 100 90)" opacity="0.95"/>
+  <ellipse cx="100" cy="68" rx="10" ry="25" fill="#FDFBF7" opacity="0.9"/>
+
+  <!-- Center of flower -->
+  <circle cx="100" cy="90" r="18" fill="url(#centerGlow)" stroke="#E8B4BC" stroke-width="1"/>
+  <circle cx="100" cy="90" r="10" fill="#A8C5A8" opacity="0.6"/>
+  <circle cx="100" cy="90" r="5" fill="#5A7A5A" opacity="0.4"/>
+
+  <!-- Small decorative dots -->
+  <circle cx="95" cy="87" r="2" fill="#5A7A5A" opacity="0.3"/>
+  <circle cx="105" cy="87" r="2" fill="#5A7A5A" opacity="0.3"/>
+  <circle cx="100" cy="95" r="2" fill="#5A7A5A" opacity="0.3"/>
+
+  <!-- Subtle stem suggestion -->
+  <path d="M100 110 Q100 130 100 145" stroke="#A8C5A8" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Text: Recovery Buddy -->
+  <text x="100" y="185"
+        font-family="Georgia, serif"
+        font-size="24"
+        font-weight="500"
+        fill="#5A7A5A"
+        text-anchor="middle">Recovery</text>
+  <text x="100" y="215"
+        font-family="Georgia, serif"
+        font-size="24"
+        font-weight="500"
+        fill="#8FB58F"
+        text-anchor="middle">Buddy</text>
+</svg>

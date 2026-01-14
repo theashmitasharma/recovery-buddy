@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="240" height="200">
+  <defs>
+    <linearGradient id="wingGradientLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A8C5A8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C8D8C8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="wingGradientRight" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5D5DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8C5CC;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left upper wing -->
+  <path d="M65 70
+           Q30 50 25 75
+           Q20 100 40 110
+           Q55 118 65 110
+           Q72 95 65 70"
+        fill="url(#wingGradientLeft)"
+        stroke="#8FB58F"
+        stroke-width="1.5"/>
+
+  <!-- Left lower wing -->
+  <path d="M65 110
+           Q45 125 50 145
+           Q55 160 70 155
+           Q80 150 78 130
+           Q75 115 65 110"
+        fill="url(#wingGradientLeft)"
+        stroke="#8FB58F"
+        stroke-width="1.5"
+        opacity="0.9"/>
+
+  <!-- Right upper wing -->
+  <path d="M75 70
+           Q110 50 115 75
+           Q120 100 100 110
+           Q85 118 75 110
+           Q68 95 75 70"
+        fill="url(#wingGradientRight)"
+        stroke="#E8B4BC"
+        stroke-width="1.5"/>
+
+  <!-- Right lower wing -->
+  <path d="M75 110
+           Q95 125 90 145
+           Q85 160 70 155
+           Q60 150 62 130
+           Q65 115 75 110"
+        fill="url(#wingGradientRight)"
+        stroke="#E8B4BC"
+        stroke-width="1.5"
+        opacity="0.9"/>
+
+  <!-- Body -->
+  <ellipse cx="70" cy="100" rx="5" ry="35" fill="#5A7A5A"/>
+
+  <!-- Head -->
+  <circle cx="70" cy="60" r="8" fill="#5A7A5A"/>
+
+  <!-- Antennae -->
+  <path d="M66 55 Q60 45 55 40" fill="none" stroke="#5A7A5A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M74 55 Q80 45 85 40" fill="none" stroke="#5A7A5A" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="55" cy="40" r="3" fill="#A8C5A8"/>
+  <circle cx="85" cy="40" r="3" fill="#F5D5DC"/>
+
+  <!-- Wing details -->
+  <circle cx="45" cy="85" r="8" fill="#FDFBF7" opacity="0.5"/>
+  <circle cx="95" cy="85" r="8" fill="#FDFBF7" opacity="0.5"/>
+  <circle cx="55" cy="135" r="5" fill="#FDFBF7" opacity="0.4"/>
+  <circle cx="85" cy="135" r="5" fill="#FDFBF7" opacity="0.4"/>
+
+  <!-- Text: Recovery Buddy -->
+  <text x="170" y="95"
+        font-family="Georgia, serif"
+        font-size="24"
+        font-weight="600"
+        fill="#5A7A5A"
+        text-anchor="middle">Recovery</text>
+  <text x="170" y="125"
+        font-family="Georgia, serif"
+        font-size="24"
+        font-weight="600"
+        fill="#8FB58F"
+        text-anchor="middle">Buddy</text>
+</svg>
