@@ -3054,6 +3054,9 @@ def show_complete():
             For informational purposes only. Not a substitute for professional medical advice.
         </p>
         <p class="copyright-text">
+            Created with 💚 by Ashmita Sharma
+        </p>
+        <p class="copyright-text">
             <a href="mailto:contact@recoverybuddy.app">Questions? Contact us</a>
         </p>
         <p class="version-text">v{APP_VERSION}</p>
