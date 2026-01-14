@@ -23,16 +23,38 @@ st.set_page_config(
 # ============================================
 # GOOGLE ANALYTICS
 # ============================================
-st.markdown("""
-<!-- Google tag (gtag.js) -->
+import streamlit.components.v1 as components
+
+# Inject GA into parent frame for reliable tracking
+components.html("""
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-63W4QGD1SJ"></script>
 <script>
+  // Initialize in current frame
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-63W4QGD1SJ');
+
+  // Also inject into parent frame (Streamlit's main window)
+  try {
+    if (window.parent && window.parent !== window) {
+      var parentWindow = window.parent;
+      if (!parentWindow.gtag) {
+        parentWindow.dataLayer = parentWindow.dataLayer || [];
+        parentWindow.gtag = function(){parentWindow.dataLayer.push(arguments);};
+        parentWindow.gtag('js', new Date());
+        parentWindow.gtag('config', 'G-63W4QGD1SJ');
+
+        // Load gtag.js in parent
+        var script = parentWindow.document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-63W4QGD1SJ';
+        parentWindow.document.head.appendChild(script);
+      }
+    }
+  } catch(e) { console.log('GA parent injection skipped'); }
 </script>
-""", unsafe_allow_html=True)
+""", height=0)
 
 # ============================================
 # CUSTOM CSS - Luxury Wellness Spa Aesthetic
