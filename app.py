@@ -961,6 +961,81 @@ st.markdown("""
         color: #5A7A5A;
     }
 
+    /* ===== LEGAL PAGE STYLES ===== */
+    .legal-page {
+        background: linear-gradient(135deg, #FDFBF7 0%, #F8F5F0 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 1rem 0;
+        border: 1px solid #E8E0D8;
+    }
+
+    .legal-page h1 {
+        color: #5A7A5A;
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .legal-page h2 {
+        color: #5A7A5A;
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.2rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .legal-page p, .legal-page li {
+        color: #3D4D3D;
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+
+    .legal-page ul {
+        margin-left: 1.5rem;
+    }
+
+    .legal-page .last-updated {
+        font-size: 0.8rem;
+        color: #8B9B8B;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .footer-legal-links {
+        margin-top: 0.5rem;
+    }
+
+    .footer-legal-links a {
+        color: #9B9B9B;
+        text-decoration: none;
+        font-size: 0.75rem;
+        margin: 0 0.5rem;
+    }
+
+    .footer-legal-links a:hover {
+        color: #5A7A5A;
+        text-decoration: underline;
+    }
+
+    /* Footer button styling - make them look like subtle links */
+    .app-footer + div button,
+    div[data-testid="stHorizontalBlock"]:has(button[key*="footer"]) button {
+        background: transparent !important;
+        border: none !important;
+        color: #9B9B9B !important;
+        font-size: 0.75rem !important;
+        padding: 0.25rem 0.5rem !important;
+        text-decoration: underline !important;
+        box-shadow: none !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[key*="footer"]) button:hover {
+        color: #5A7A5A !important;
+        background: transparent !important;
+    }
+
     /* ===== ERROR MESSAGE STYLES ===== */
     .friendly-error {
         background: linear-gradient(135deg, #FFF8E7 0%, #FFF3D6 100%);
@@ -1640,6 +1715,118 @@ def render_header():
     """, unsafe_allow_html=True)
 
 
+def show_terms_of_service():
+    """Display Terms of Service page"""
+    render_header()
+
+    st.markdown("""
+    <div class="legal-page">
+        <h1>Terms of Service</h1>
+
+        <p>Welcome to Recovery Buddy. By using this application, you agree to the following terms and conditions.</p>
+
+        <h2>1. Informational Purpose Only</h2>
+        <p>Recovery Buddy is designed for informational and educational purposes only. The content provided in this app is intended to support your post-surgery recovery journey by offering general guidance, tracking tools, and emotional support resources.</p>
+
+        <h2>2. Not Medical Advice</h2>
+        <p>This app does not provide medical advice, diagnosis, or treatment. The information presented should never replace professional medical guidance. Always consult your surgeon, physician, or qualified healthcare provider with any questions about your medical condition, recovery progress, or treatment plan.</p>
+
+        <h2>3. Age Requirement</h2>
+        <p>Users must be 18 years of age or older to use this app. Users under 18 may use this app only with parental or guardian consent and supervision.</p>
+
+        <h2>4. Limitation of Liability</h2>
+        <p>Recovery Buddy, its creators, and affiliates are not liable for any decisions, actions, or outcomes based on information provided within this app. You assume full responsibility for how you use the information and tools provided.</p>
+
+        <h2>5. No Warranties</h2>
+        <p>We make no warranties or guarantees about recovery outcomes, timelines, or results. Every individual's recovery is unique and depends on many factors beyond the scope of this app.</p>
+
+        <h2>6. Updates and Modifications</h2>
+        <p>We reserve the right to update, modify, or discontinue any features of this app at any time. These Terms of Service may also be updated periodically. Continued use of the app constitutes acceptance of any changes.</p>
+
+        <h2>7. Intellectual Property</h2>
+        <p>All content, design, features, and functionality of Recovery Buddy are the intellectual property of Recovery Buddy and its creators. Users agree not to copy, reproduce, distribute, or create derivative works based on this app without express written permission.</p>
+
+        <h2>8. User Conduct</h2>
+        <p>Users agree to use this app responsibly and not attempt to reverse engineer, hack, or misuse any part of the application.</p>
+
+        <h2>9. Contact</h2>
+        <p>If you have questions about these Terms of Service, please contact us at <a href="mailto:legal@recoverybuddy.app">legal@recoverybuddy.app</a>.</p>
+
+        <p class="last-updated">Last updated: January 2026</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("← Back to App", key="btn_back_from_terms", type="primary", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
+
+
+def show_privacy_policy():
+    """Display Privacy Policy page"""
+    render_header()
+
+    st.markdown("""
+    <div class="legal-page">
+        <h1>Privacy Policy</h1>
+
+        <p>Your privacy is important to us. This Privacy Policy explains how Recovery Buddy handles your information.</p>
+
+        <h2>1. Information We Collect</h2>
+        <p>Recovery Buddy may collect the following types of information that you voluntarily provide:</p>
+        <ul>
+            <li>Your name (for personalized messages)</li>
+            <li>Procedure type and surgery date</li>
+            <li>Daily symptom check-ins (pain levels, swelling, bruising, etc.)</li>
+            <li>Mood and emotional well-being entries</li>
+            <li>Journal entries and notes</li>
+            <li>Photos you choose to upload for progress tracking</li>
+        </ul>
+
+        <h2>2. Local Storage Only</h2>
+        <p><strong>Your data stays on your device.</strong> All information you enter into Recovery Buddy is stored locally in your browser's storage. We do not transmit, upload, or store your personal data on external servers.</p>
+
+        <h2>3. No Data Selling or Sharing</h2>
+        <p>We do not sell, trade, rent, or share your personal information with third parties. Your recovery journey is private and stays that way.</p>
+
+        <h2>4. No Cross-Site Tracking</h2>
+        <p>We do not use tracking cookies, pixels, or any technology to track your activity across other websites. We do not build advertising profiles or share data with advertisers.</p>
+
+        <h2>5. Analytics</h2>
+        <p>We may collect anonymous, aggregated usage statistics (such as page views) to improve the app experience. This data cannot be used to identify individual users.</p>
+
+        <h2>6. Deleting Your Data</h2>
+        <p>You have full control over your data. To delete all your Recovery Buddy data:</p>
+        <ul>
+            <li>Clear your browser's local storage/site data for this website</li>
+            <li>Use your browser's "Clear browsing data" feature</li>
+            <li>Delete the recovery_progress.json file if running locally</li>
+        </ul>
+
+        <h2>7. Data Security</h2>
+        <p>Since your data is stored locally on your device, its security depends on your device's security. We recommend using a secure, password-protected device.</p>
+
+        <h2>8. Children's Privacy</h2>
+        <p>Recovery Buddy is not intended for use by children under 13. We do not knowingly collect information from children under 13 years of age.</p>
+
+        <h2>9. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated revision date.</p>
+
+        <h2>10. Contact Us</h2>
+        <p>If you have questions about this Privacy Policy or your data, please contact us at <a href="mailto:privacy@recoverybuddy.app">privacy@recoverybuddy.app</a>.</p>
+
+        <p class="last-updated">Last updated: January 2026</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("← Back to App", key="btn_back_from_privacy", type="primary", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
+
+
 def main():
     # Show loading screen on first load
     if 'app_loaded' not in st.session_state:
@@ -1763,6 +1950,14 @@ def main():
     # Render header and progress
     render_header()
     render_progress_bar()
+
+    # Check for legal pages first (they have their own layout)
+    if st.session_state.step == 'terms':
+        show_terms_of_service()
+        return
+    elif st.session_state.step == 'privacy':
+        show_privacy_policy()
+        return
 
     # Main content
     if st.session_state.step == 'welcome':
@@ -2829,12 +3024,12 @@ def show_complete():
             st.session_state.user_data = {}
             st.rerun()
 
-    # ===== FOOTER WITH COPYRIGHT, DISCLAIMER, CONTACT =====
+    # ===== FOOTER WITH COPYRIGHT, DISCLAIMER, LEGAL LINKS =====
     st.markdown(f"""
     <div class="app-footer">
         <p class="copyright-text">
             © 2026 Recovery Buddy. All rights reserved.<br>
-            This app is for informational purposes only and is not a substitute for professional medical advice.
+            For informational purposes only. Not a substitute for professional medical advice.
         </p>
         <p class="copyright-text">
             <a href="mailto:contact@recoverybuddy.app">Questions? Contact us</a>
@@ -2842,6 +3037,19 @@ def show_complete():
         <p class="version-text">v{APP_VERSION}</p>
     </div>
     """, unsafe_allow_html=True)
+
+    # Footer navigation links
+    st.markdown("<div style='text-align: center; margin-top: 0.5rem;'>", unsafe_allow_html=True)
+    footer_cols = st.columns([2, 1, 1, 2])
+    with footer_cols[1]:
+        if st.button("Terms of Service", key="footer_terms"):
+            st.session_state.step = 'terms'
+            st.rerun()
+    with footer_cols[2]:
+        if st.button("Privacy Policy", key="footer_privacy"):
+            st.session_state.step = 'privacy'
+            st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def run_with_error_handling():
