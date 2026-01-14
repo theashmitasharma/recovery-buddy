@@ -945,6 +945,22 @@ st.markdown("""
         color: #8B9B8B;
     }
 
+    .copyright-text {
+        font-size: 0.75rem;
+        color: #9B9B9B;
+        margin-top: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .copyright-text a {
+        color: #9B9B9B;
+        text-decoration: underline;
+    }
+
+    .copyright-text a:hover {
+        color: #5A7A5A;
+    }
+
     /* ===== ERROR MESSAGE STYLES ===== */
     .friendly-error {
         background: linear-gradient(135deg, #FFF8E7 0%, #FFF3D6 100%);
@@ -2813,17 +2829,15 @@ def show_complete():
             st.session_state.user_data = {}
             st.rerun()
 
-    # ===== FOOTER WITH DISCLAIMER, FEEDBACK, VERSION =====
+    # ===== FOOTER WITH COPYRIGHT, DISCLAIMER, CONTACT =====
     st.markdown(f"""
     <div class="app-footer">
-        <p class="disclaimer-text">
-            ⚕️ <strong>Medical Disclaimer:</strong> Recovery Buddy is for informational purposes only and is not a substitute
-            for professional medical advice, diagnosis, or treatment. Always consult your surgeon or healthcare provider
-            with any questions about your medical condition or recovery.
+        <p class="copyright-text">
+            © 2026 Recovery Buddy. All rights reserved.<br>
+            This app is for informational purposes only and is not a substitute for professional medical advice.
         </p>
-        <p class="footer-links">
-            💚 Made with love for your healing journey<br>
-            <a href="mailto:feedback@recoverybuddy.app">Have feedback? We'd love to hear from you!</a>
+        <p class="copyright-text">
+            <a href="mailto:contact@recoverybuddy.app">Questions? Contact us</a>
         </p>
         <p class="version-text">v{APP_VERSION}</p>
     </div>
