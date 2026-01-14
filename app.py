@@ -361,6 +361,22 @@ st.markdown("""
         margin-bottom: 1rem;
     }
 
+    .logo-header svg {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Mobile responsive logo */
+    @media (max-width: 600px) {
+        .logo-header {
+            padding: 1.5rem 0.5rem 0.5rem 0.5rem;
+        }
+        .logo-header svg {
+            width: 100%;
+            max-width: 360px;
+        }
+    }
+
     .logo-icon {
         font-size: 3.5rem;
         margin-bottom: 0.5rem;
@@ -1682,7 +1698,7 @@ def render_progress_bar():
 def render_header():
     st.markdown("""
     <div class="logo-header">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="320" height="80" style="max-width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" width="480" height="130" style="max-width: 100%;">
           <defs>
             <linearGradient id="hPetalG" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" style="stop-color:#A8C5A8;stop-opacity:1" />
@@ -1693,23 +1709,29 @@ def render_header():
               <stop offset="100%" style="stop-color:#FFEEF2;stop-opacity:1" />
             </linearGradient>
           </defs>
-          <ellipse cx="50" cy="35" rx="12" ry="28" fill="url(#hPetalG)" transform="rotate(-30 50 50)" opacity="0.8"/>
-          <ellipse cx="50" cy="35" rx="12" ry="28" fill="url(#hPetalG)" transform="rotate(30 50 50)" opacity="0.8"/>
-          <ellipse cx="50" cy="35" rx="12" ry="28" fill="url(#hPetalG)" transform="rotate(-60 50 50)" opacity="0.7"/>
-          <ellipse cx="50" cy="35" rx="12" ry="28" fill="url(#hPetalG)" transform="rotate(60 50 50)" opacity="0.7"/>
-          <ellipse cx="50" cy="38" rx="10" ry="24" fill="url(#hPetalP)" transform="rotate(-20 50 50)" opacity="0.9"/>
-          <ellipse cx="50" cy="38" rx="10" ry="24" fill="url(#hPetalP)" transform="rotate(20 50 50)" opacity="0.9"/>
-          <ellipse cx="50" cy="38" rx="10" ry="24" fill="url(#hPetalP)" transform="rotate(-45 50 50)" opacity="0.85"/>
-          <ellipse cx="50" cy="38" rx="10" ry="24" fill="url(#hPetalP)" transform="rotate(45 50 50)" opacity="0.85"/>
-          <ellipse cx="50" cy="42" rx="8" ry="18" fill="#FFEEF2" transform="rotate(-10 50 50)" opacity="0.95"/>
-          <ellipse cx="50" cy="42" rx="8" ry="18" fill="#FFEEF2" transform="rotate(10 50 50)" opacity="0.95"/>
-          <ellipse cx="50" cy="44" rx="6" ry="15" fill="#FDFBF7" opacity="0.9"/>
-          <circle cx="50" cy="50" r="10" fill="#FDFBF7" stroke="#E8B4BC" stroke-width="1"/>
-          <circle cx="50" cy="50" r="6" fill="#A8C5A8" opacity="0.6"/>
-          <circle cx="50" cy="50" r="3" fill="#5A7A5A" opacity="0.4"/>
-          <text x="120" y="45" font-family="Georgia, serif" font-size="32" font-weight="600" fill="#5A7A5A">Recovery</text>
-          <text x="280" y="45" font-family="Georgia, serif" font-size="32" font-weight="600" fill="#8FB58F">Buddy</text>
-          <text x="120" y="72" font-family="Arial, sans-serif" font-size="12" fill="#8B9B8B">Bloom through your recovery journey</text>
+          <!-- Outer petals (sage green) - enlarged -->
+          <ellipse cx="65" cy="45" rx="16" ry="38" fill="url(#hPetalG)" transform="rotate(-30 65 65)" opacity="0.8"/>
+          <ellipse cx="65" cy="45" rx="16" ry="38" fill="url(#hPetalG)" transform="rotate(30 65 65)" opacity="0.8"/>
+          <ellipse cx="65" cy="45" rx="16" ry="38" fill="url(#hPetalG)" transform="rotate(-60 65 65)" opacity="0.7"/>
+          <ellipse cx="65" cy="45" rx="16" ry="38" fill="url(#hPetalG)" transform="rotate(60 65 65)" opacity="0.7"/>
+          <!-- Middle petals (soft pink) - enlarged -->
+          <ellipse cx="65" cy="50" rx="13" ry="32" fill="url(#hPetalP)" transform="rotate(-20 65 65)" opacity="0.9"/>
+          <ellipse cx="65" cy="50" rx="13" ry="32" fill="url(#hPetalP)" transform="rotate(20 65 65)" opacity="0.9"/>
+          <ellipse cx="65" cy="50" rx="13" ry="32" fill="url(#hPetalP)" transform="rotate(-45 65 65)" opacity="0.85"/>
+          <ellipse cx="65" cy="50" rx="13" ry="32" fill="url(#hPetalP)" transform="rotate(45 65 65)" opacity="0.85"/>
+          <!-- Inner petals - enlarged -->
+          <ellipse cx="65" cy="55" rx="10" ry="24" fill="#FFEEF2" transform="rotate(-10 65 65)" opacity="0.95"/>
+          <ellipse cx="65" cy="55" rx="10" ry="24" fill="#FFEEF2" transform="rotate(10 65 65)" opacity="0.95"/>
+          <ellipse cx="65" cy="58" rx="8" ry="20" fill="#FDFBF7" opacity="0.9"/>
+          <!-- Center - enlarged -->
+          <circle cx="65" cy="65" r="13" fill="#FDFBF7" stroke="#E8B4BC" stroke-width="1.5"/>
+          <circle cx="65" cy="65" r="8" fill="#A8C5A8" opacity="0.6"/>
+          <circle cx="65" cy="65" r="4" fill="#5A7A5A" opacity="0.4"/>
+          <!-- Text: Recovery Buddy - larger -->
+          <text x="145" y="62" font-family="Georgia, serif" font-size="48" font-weight="600" fill="#5A7A5A">Recovery</text>
+          <text x="370" y="62" font-family="Georgia, serif" font-size="48" font-weight="600" fill="#8FB58F">Buddy</text>
+          <!-- Tagline - larger -->
+          <text x="145" y="100" font-family="Arial, sans-serif" font-size="16" fill="#8B9B8B">Bloom through your recovery journey</text>
         </svg>
     </div>
     """, unsafe_allow_html=True)
