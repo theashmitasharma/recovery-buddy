@@ -21,6 +21,20 @@ st.set_page_config(
 )
 
 # ============================================
+# GOOGLE ANALYTICS
+# ============================================
+st.markdown("""
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-63W4QGD1SJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-63W4QGD1SJ');
+</script>
+""", unsafe_allow_html=True)
+
+# ============================================
 # CUSTOM CSS - Luxury Wellness Spa Aesthetic
 # ============================================
 st.markdown("""
