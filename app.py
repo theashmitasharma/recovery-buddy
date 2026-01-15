@@ -15,7 +15,7 @@ APP_VERSION = "1.0"
 # Page config with bloom favicon
 st.set_page_config(
     page_title="Recovery Buddy",
-    page_icon="🌸",
+    page_icon="logos/favicon_bloom.svg",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
@@ -53,6 +53,80 @@ components.html("""
       }
     }
   } catch(e) { console.log('GA parent injection skipped'); }
+</script>
+""", height=0)
+
+# ============================================
+# PWA (Progressive Web App) Setup
+# ============================================
+components.html("""
+<script>
+  // Inject PWA elements into parent frame
+  try {
+    if (window.parent && window.parent.document) {
+      var parentDoc = window.parent.document;
+      var parentHead = parentDoc.head;
+
+      // Add manifest link if not already present
+      if (!parentDoc.querySelector('link[rel="manifest"]')) {
+        var manifest = parentDoc.createElement('link');
+        manifest.rel = 'manifest';
+        manifest.href = '/app/static/manifest.json';
+        parentHead.appendChild(manifest);
+      }
+
+      // Add theme color meta tag
+      if (!parentDoc.querySelector('meta[name="theme-color"]')) {
+        var themeColor = parentDoc.createElement('meta');
+        themeColor.name = 'theme-color';
+        themeColor.content = '#A8C5A8';
+        parentHead.appendChild(themeColor);
+      }
+
+      // Add Apple touch icon
+      if (!parentDoc.querySelector('link[rel="apple-touch-icon"]')) {
+        var appleIcon = parentDoc.createElement('link');
+        appleIcon.rel = 'apple-touch-icon';
+        appleIcon.href = '/app/static/icon-192.png';
+        parentHead.appendChild(appleIcon);
+      }
+
+      // Add mobile web app capable meta tags
+      if (!parentDoc.querySelector('meta[name="mobile-web-app-capable"]')) {
+        var mobileCapable = parentDoc.createElement('meta');
+        mobileCapable.name = 'mobile-web-app-capable';
+        mobileCapable.content = 'yes';
+        parentHead.appendChild(mobileCapable);
+      }
+
+      if (!parentDoc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+        var appleCapable = parentDoc.createElement('meta');
+        appleCapable.name = 'apple-mobile-web-app-capable';
+        appleCapable.content = 'yes';
+        parentHead.appendChild(appleCapable);
+      }
+
+      if (!parentDoc.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')) {
+        var statusBar = parentDoc.createElement('meta');
+        statusBar.name = 'apple-mobile-web-app-status-bar-style';
+        statusBar.content = 'default';
+        parentHead.appendChild(statusBar);
+      }
+
+      // Register service worker
+      if ('serviceWorker' in window.parent.navigator) {
+        window.parent.navigator.serviceWorker.register('/app/static/sw.js', {scope: '/'})
+          .then(function(registration) {
+            console.log('Recovery Buddy: Service Worker registered with scope:', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('Recovery Buddy: Service Worker registration failed:', error);
+          });
+      }
+    }
+  } catch(e) {
+    console.log('PWA setup skipped:', e);
+  }
 </script>
 """, height=0)
 
