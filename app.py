@@ -10,7 +10,9 @@ import os
 from datetime import datetime
 
 # App version
-APP_VERSION = "1.1"
+APP_VERSION = "1.2.0"
+APP_CREATOR = "Ashmita Sharma"
+LAST_MEDICAL_REVIEW = "January 2026"
 
 # Medical Sources for Citations
 MEDICAL_SOURCES = {
@@ -56,11 +58,11 @@ def get_citation_html(source_keys, inline=True):
         return f'<span class="citation-inline">Sources: {", ".join(citations)}</span>'
     return citations
 
-# Page config with bloom favicon
+# Page config with bloom favicon - WIDE LAYOUT for better use of space
 st.set_page_config(
     page_title="Recovery Buddy",
     page_icon="logos/favicon_bloom.svg",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed"
 )
 
@@ -198,6 +200,86 @@ st.markdown("""
         --white: #FFFFFF;
         --shadow: rgba(61, 74, 61, 0.08);
         --shadow-hover: rgba(61, 74, 61, 0.12);
+    }
+
+    /* ===== WIDE LAYOUT & RESPONSIVE DESIGN ===== */
+
+    /* Max width container for readability */
+    .main .block-container {
+        max-width: 1200px;
+        padding: 2rem 2rem;
+    }
+
+    /* Responsive columns */
+    @media (max-width: 768px) {
+        .main .block-container {
+            padding: 1rem 1rem;
+        }
+
+        [data-testid="column"] {
+            width: 100% !important;
+            flex: 100% !important;
+        }
+    }
+
+    /* Privacy badge styles */
+    .privacy-badge {
+        background: linear-gradient(135deg, #E8F5E8 0%, #F0FFF0 100%);
+        border: 1px solid #A8C5A8;
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        color: #3D6B3D;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Welcome back card */
+    .welcome-back-card {
+        background: linear-gradient(135deg, #FDF2F4 0%, #FFEEF2 100%);
+        border: 1px solid #E8B4BC;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Dashboard stat card */
+    .stat-card {
+        background: #FFFFFF;
+        border: 1px solid #E8F0E8;
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #5A7A5A;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.85rem;
+        color: #6B8B6B;
+        margin-top: 0.25rem;
+    }
+
+    /* Section divider */
+    .section-divider {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #E8F0E8, transparent);
+        margin: 1.5rem 0;
+    }
+
+    /* Home button */
+    .home-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
     }
 
     /* ===== HIDE ALL STREAMLIT INTERNAL DEBUG/KEY ELEMENTS ===== */
@@ -2269,6 +2351,314 @@ def show_references():
             st.rerun()
 
 
+def show_dashboard():
+    """My Progress Dashboard - View all saved data"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>📊 My Progress Dashboard</h3>
+        <p style="color: #3D4D3D;">Track your recovery journey and view your history.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Privacy notice
+    st.markdown("""
+    <div class="privacy-badge">
+        🔒 All data is stored locally on your device only
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Stats row
+    col1, col2, col3, col4 = st.columns(4)
+
+    name = st.session_state.progress_data.get('name', 'Guest')
+    procedure = st.session_state.progress_data.get('procedure', 'Not set')
+    streak = st.session_state.streak
+    total_checkins = len(st.session_state.check_in_history)
+
+    with col1:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-value">🔥 {streak}</div>
+            <div class="stat-label">Day Streak</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-value">📋 {total_checkins}</div>
+            <div class="stat-label">Check-ins</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col3:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-value">📝 {len(st.session_state.journal_entries)}</div>
+            <div class="stat-label">Journal Entries</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col4:
+        day = st.session_state.user_data.get('day', st.session_state.progress_data.get('day', 0))
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-value">📅 {day}</div>
+            <div class="stat-label">Recovery Day</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Two column layout for details
+    left_col, right_col = st.columns(2)
+
+    with left_col:
+        st.markdown("#### 👤 My Information")
+        st.markdown(f"""
+        <div style="background: #FFFFFF; border: 1px solid #E8F0E8; border-radius: 12px; padding: 1rem;">
+            <p><strong>Name:</strong> {name}</p>
+            <p><strong>Procedure:</strong> {PROCEDURES.get(procedure, {}).get('name', procedure) if procedure else 'Not set'}</p>
+            <p><strong>Surgery Date:</strong> {st.session_state.progress_data.get('surgery_date', 'Not set')}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("#### 📈 Pain History")
+        if st.session_state.pain_history:
+            for entry in st.session_state.pain_history[-5:]:  # Last 5 entries
+                st.markdown(f"• Day {entry.get('day', '?')}: Level {entry.get('level', '?')}/10")
+        else:
+            st.markdown("*No pain history recorded yet. Complete a check-in to start tracking.*")
+
+    with right_col:
+        st.markdown("#### 📝 Recent Journal Entries")
+        if st.session_state.journal_entries:
+            for key, entry in list(st.session_state.journal_entries.items())[-3:]:
+                if entry and entry.strip():
+                    st.markdown(f"""
+                    <div style="background: #F5F0E8; padding: 0.75rem; border-radius: 8px; margin: 0.5rem 0;">
+                        <p style="color: #2D3A2D; font-size: 0.9rem; margin: 0;">{entry[:150]}{'...' if len(entry) > 150 else ''}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+        else:
+            st.markdown("*No journal entries yet. Start writing in your recovery journal!*")
+
+        st.markdown("#### 🎯 Recovery Timeline")
+        st.markdown(f"""
+        <div style="background: #E8F5E8; padding: 1rem; border-radius: 12px;">
+            <p style="color: #3D6B3D; margin: 0;">You're doing great! Every day brings you closer to full recovery.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Action buttons
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("🏠 Home", key="dash_home", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
+    with col2:
+        if st.button("📄 Export Data", key="dash_export", use_container_width=True):
+            st.info("📋 Data export coming soon! For now, take screenshots of your progress.")
+    with col3:
+        if st.button("✏️ Edit My Info", key="dash_edit", use_container_width=True):
+            st.session_state.step = 'get_info'
+            st.rerun()
+
+
+def show_about():
+    """About page with app info and credits"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <div class="emoji-large">🌸</div>
+        <h3 style="text-align: center;">About Recovery Buddy</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Two column layout
+    col_left, col_right = st.columns(2)
+
+    with col_left:
+        st.markdown(f"""
+        <div class="legal-page">
+            <h2>App Information</h2>
+            <p><strong>Version:</strong> {APP_VERSION}</p>
+            <p><strong>Created by:</strong> {APP_CREATOR}</p>
+            <p><strong>Medical Review Date:</strong> {LAST_MEDICAL_REVIEW}</p>
+
+            <h2 style="margin-top: 1.5rem;">Our Mission</h2>
+            <p>Recovery Buddy was created to provide compassionate support during your post-surgery recovery journey.
+            We believe everyone deserves access to helpful recovery information and emotional support.</p>
+
+            <h2 style="margin-top: 1.5rem;">Contact & Support</h2>
+            <p>📧 <strong>Email:</strong> <a href="mailto:support@recoverybuddy.app">support@recoverybuddy.app</a></p>
+            <p>💬 <strong>Feedback:</strong> <a href="mailto:feedback@recoverybuddy.app">feedback@recoverybuddy.app</a></p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_right:
+        st.markdown("""
+        <div class="legal-page">
+            <h2>Medical Sources</h2>
+            <p>Our information is compiled from board-certified medical sources:</p>
+            <ul>
+                <li>American Society of Plastic Surgeons</li>
+                <li>Mayo Clinic</li>
+                <li>Cleveland Clinic</li>
+                <li>WebMD</li>
+                <li>RealSelf</li>
+            </ul>
+
+            <h2 style="margin-top: 1.5rem;">Privacy & Data</h2>
+            <p>🔒 <strong>Your data stays on your device.</strong> We do not collect, store, or share your personal information on external servers.</p>
+
+            <h2 style="margin-top: 1.5rem;">Disclaimer</h2>
+            <p>This app provides general information only and is NOT medical advice. Always consult your surgeon or healthcare provider.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Action buttons
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        if st.button("🏠 Home", key="about_home", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
+    with col2:
+        if st.button("📜 Terms of Service", key="about_terms", use_container_width=True):
+            st.session_state.step = 'terms'
+            st.rerun()
+    with col3:
+        if st.button("🔒 Privacy Policy", key="about_privacy", use_container_width=True):
+            st.session_state.step = 'privacy'
+            st.rerun()
+    with col4:
+        if st.button("📚 Medical References", key="about_refs", use_container_width=True):
+            st.session_state.step = 'references'
+            st.rerun()
+
+    # Share and feedback section
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+    st.markdown("#### 💝 Share & Support")
+
+    share_col1, share_col2 = st.columns(2)
+    with share_col1:
+        st.markdown("""
+        <div style="background: #FDF2F4; padding: 1rem; border-radius: 12px; text-align: center;">
+            <p style="margin: 0;"><strong>💌 Know someone recovering from surgery?</strong></p>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">Share Recovery Buddy with them!</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with share_col2:
+        st.markdown("""
+        <div style="background: #E8F5E8; padding: 1rem; border-radius: 12px; text-align: center;">
+            <p style="margin: 0;"><strong>📝 Have feedback?</strong></p>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">We'd love to hear from you!</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+def show_settings():
+    """Settings page with data management"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>⚙️ Settings</h3>
+        <p style="color: #3D4D3D;">Manage your preferences and data.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Two column layout
+    col_left, col_right = st.columns(2)
+
+    with col_left:
+        st.markdown("#### 🎨 Appearance")
+
+        # Dark mode toggle
+        dark_mode = st.toggle("🌙 Dark Mode", value=st.session_state.dark_mode, key="settings_dark_mode")
+        if dark_mode != st.session_state.dark_mode:
+            st.session_state.dark_mode = dark_mode
+            st.rerun()
+
+        # Celebration style
+        celebration_options = [
+            "🎈 Balloons", "❄️ Snow", "🫧 Bubbles", "❤️ Hearts",
+            "🎊 Confetti", "✨ Sparkles", "🦋 Butterflies"
+        ]
+        current_index = celebration_options.index(st.session_state.celebration_style) if st.session_state.celebration_style in celebration_options else 0
+        celebration = st.selectbox("🎉 Celebration Style", celebration_options, index=current_index, key="settings_celebration")
+        if celebration != st.session_state.celebration_style:
+            st.session_state.celebration_style = celebration
+
+        st.markdown("#### 📱 Notifications")
+        st.markdown("*Push notifications coming soon!*")
+
+    with col_right:
+        st.markdown("#### 🔒 Data & Privacy")
+
+        st.markdown("""
+        <div class="privacy-badge" style="margin-bottom: 1rem;">
+            🔒 All your data is stored locally on this device only
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("##### Your Saved Data:")
+        st.markdown(f"""
+        - **Name:** {st.session_state.progress_data.get('name', 'Not set')}
+        - **Procedure:** {st.session_state.progress_data.get('procedure', 'Not set')}
+        - **Journal entries:** {len(st.session_state.journal_entries)}
+        - **Check-ins:** {len(st.session_state.check_in_history)}
+        """)
+
+        st.markdown("##### Data Management:")
+
+        if st.button("🗑️ Clear All My Data", key="clear_data", type="secondary", use_container_width=True):
+            st.session_state.show_clear_confirm = True
+
+        if st.session_state.get('show_clear_confirm', False):
+            st.warning("⚠️ This will permanently delete all your saved data. This cannot be undone.")
+            confirm_col1, confirm_col2 = st.columns(2)
+            with confirm_col1:
+                if st.button("Yes, Delete Everything", key="confirm_delete", type="primary"):
+                    # Clear all data
+                    st.session_state.progress_data = {}
+                    st.session_state.user_data = {}
+                    st.session_state.journal_entries = {}
+                    st.session_state.checklist = {}
+                    st.session_state.pain_history = []
+                    st.session_state.check_in_history = []
+                    st.session_state.streak = 0
+                    st.session_state.is_returning_user = False
+                    st.session_state.show_clear_confirm = False
+                    # Clear saved file
+                    if os.path.exists(PROGRESS_FILE):
+                        os.remove(PROGRESS_FILE)
+                    st.success("✅ All data cleared!")
+                    st.rerun()
+            with confirm_col2:
+                if st.button("Cancel", key="cancel_delete"):
+                    st.session_state.show_clear_confirm = False
+                    st.rerun()
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Home button
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🏠 Back to Home", key="settings_home", type="primary", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
+
+
 def main():
     # Show loading screen on first load
     if 'app_loaded' not in st.session_state:
@@ -2299,6 +2689,19 @@ def main():
         st.session_state.celebration_style = "🎈 Balloons"
     if 'disclaimer_accepted' not in st.session_state:
         st.session_state.disclaimer_accepted = False
+    # Enhanced data tracking
+    if 'pain_history' not in st.session_state:
+        st.session_state.pain_history = []  # List of {date, level, notes}
+    if 'check_in_history' not in st.session_state:
+        st.session_state.check_in_history = []  # List of check-ins
+    if 'is_returning_user' not in st.session_state:
+        # Check if user has saved data
+        saved_data = st.session_state.progress_data
+        st.session_state.is_returning_user = bool(saved_data.get('name') or saved_data.get('procedure'))
+    if 'last_check_in' not in st.session_state:
+        st.session_state.last_check_in = st.session_state.progress_data.get('last_check_in')
+    if 'streak' not in st.session_state:
+        st.session_state.streak = st.session_state.progress_data.get('streak', 0)
 
     # Show disclaimer popup on first visit
     if not st.session_state.disclaimer_accepted:
@@ -2498,44 +2901,110 @@ def main():
         show_daily_tip()
     elif st.session_state.step == 'complete':
         show_complete()
+    elif st.session_state.step == 'dashboard':
+        show_dashboard()
+    elif st.session_state.step == 'about':
+        show_about()
+    elif st.session_state.step == 'settings':
+        show_settings()
 
 
 def show_welcome():
     import random
 
-    st.markdown("""
-    <div class="wellness-card">
-        <div class="emoji-large">🌸</div>
-        <h3 style="text-align: center;">Welcome to Your Recovery Journey</h3>
-        <p style="text-align: center; color: #3D4D3D; line-height: 1.8;">
-            I'm here to support you through your post-surgery healing. Together, we'll check in on how you're feeling,
-            track your progress, and make sure you have the information you need to recover with confidence.
+    # Check for returning user
+    saved_name = st.session_state.progress_data.get('name', '')
+    saved_procedure = st.session_state.progress_data.get('procedure', '')
+    is_returning = bool(saved_name)
+
+    # Wide layout with two columns
+    if is_returning:
+        # Welcome back message for returning users
+        st.markdown(f"""
+        <div class="welcome-back-card">
+            <h3 style="color: #5A7A5A; margin: 0;">👋 Welcome back, {saved_name}!</h3>
+            <p style="color: #3D4D3D; margin: 0.5rem 0 0 0;">
+                Ready to continue your recovery journey? Your progress is saved locally on this device.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Show last check-in info if available
+        last_check = st.session_state.progress_data.get('last_check_in')
+        if last_check:
+            st.markdown(f"""
+            <p style="color: #6B8B6B; font-size: 0.85rem;">
+                📅 Last check-in: {last_check} • 🔥 Streak: {st.session_state.streak} days
+            </p>
+            """, unsafe_allow_html=True)
+
+    # Main content in columns for wide layout
+    col_left, col_right = st.columns([1, 1])
+
+    with col_left:
+        st.markdown("""
+        <div class="wellness-card">
+            <div class="emoji-large">🌸</div>
+            <h3 style="text-align: center;">Welcome to Your Recovery Journey</h3>
+            <p style="text-align: center; color: #3D4D3D; line-height: 1.8;">
+                I'm here to support you through your post-surgery healing. Together, we'll check in on how you're feeling,
+                track your progress, and make sure you have the information you need to recover with confidence.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Random affirmation
+        affirmation = random.choice(AFFIRMATIONS)
+        st.markdown(f"""
+        <div class="affirmation">{affirmation}</div>
+        """, unsafe_allow_html=True)
+
+    with col_right:
+        st.markdown("""
+        <div class="info-box">
+            <p>✨ <strong>What we'll do together:</strong></p>
+            <p style="margin-top: 0.5rem;">
+                • Check your physical symptoms<br>
+                • Support your emotional wellbeing<br>
+                • Provide personalized daily tips<br>
+                • Track your healing progress
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Privacy notice
+        st.markdown("""
+        <div class="privacy-badge" style="margin-top: 1rem;">
+            🔒 <strong>Your data stays on your device</strong> — We don't collect or store your personal information on external servers.
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Medical review date
+        st.markdown(f"""
+        <p style="color: #8B9B8B; font-size: 0.75rem; margin-top: 0.75rem;">
+            📚 Medical information last reviewed: {LAST_MEDICAL_REVIEW}
         </p>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    # Random affirmation
-    affirmation = random.choice(AFFIRMATIONS)
-    st.markdown(f"""
-    <div class="affirmation">{affirmation}</div>
-    """, unsafe_allow_html=True)
+    # Action buttons
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
 
-    st.markdown("""
-    <div class="info-box">
-        <p>✨ <strong>What we'll do together:</strong></p>
-        <p style="margin-top: 0.5rem;">
-            • Check your physical symptoms<br>
-            • Support your emotional wellbeing<br>
-            • Provide personalized daily tips<br>
-            • Track your healing progress
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("Begin Check-In", key="btn_begin", type="primary", use_container_width=True):
+    btn_col1, btn_col2, btn_col3, btn_col4 = st.columns([1, 1, 1, 1])
+    with btn_col1:
+        if st.button("🩺 Begin Check-In", key="btn_begin", type="primary", use_container_width=True):
             st.session_state.step = 'get_info'
+            st.rerun()
+    with btn_col2:
+        if st.button("📊 My Progress", key="btn_progress", use_container_width=True):
+            st.session_state.step = 'dashboard'
+            st.rerun()
+    with btn_col3:
+        if st.button("ℹ️ About", key="btn_about", use_container_width=True):
+            st.session_state.step = 'about'
+            st.rerun()
+    with btn_col4:
+        if st.button("⚙️ Settings", key="btn_settings", use_container_width=True):
+            st.session_state.step = 'settings'
             st.rerun()
 
     st.markdown("""
@@ -3620,20 +4089,39 @@ def show_complete():
     </div>
     """, unsafe_allow_html=True)
 
+    # Medical review date
+    st.markdown(f"""
+    <p style="text-align: center; color: #8B9B8B; font-size: 0.75rem; margin-top: 0.5rem;">
+        📚 Medical information last reviewed: {LAST_MEDICAL_REVIEW} • 🔒 Data stored locally
+    </p>
+    """, unsafe_allow_html=True)
+
     # Footer navigation links
     st.markdown("<div style='text-align: center; margin-top: 0.5rem;'>", unsafe_allow_html=True)
-    footer_cols = st.columns([1, 1, 1, 1, 1])
+    footer_cols = st.columns([1, 1, 1, 1, 1, 1])
+    with footer_cols[0]:
+        if st.button("🏠 Home", key="footer_home"):
+            st.session_state.step = 'welcome'
+            st.rerun()
     with footer_cols[1]:
+        if st.button("📊 Progress", key="footer_progress"):
+            st.session_state.step = 'dashboard'
+            st.rerun()
+    with footer_cols[2]:
         if st.button("Terms", key="footer_terms"):
             st.session_state.step = 'terms'
             st.rerun()
-    with footer_cols[2]:
+    with footer_cols[3]:
         if st.button("Privacy", key="footer_privacy"):
             st.session_state.step = 'privacy'
             st.rerun()
-    with footer_cols[3]:
+    with footer_cols[4]:
         if st.button("References", key="footer_references"):
             st.session_state.step = 'references'
+            st.rerun()
+    with footer_cols[5]:
+        if st.button("About", key="footer_about"):
+            st.session_state.step = 'about'
             st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
