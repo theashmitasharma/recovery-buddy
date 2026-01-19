@@ -28,7 +28,7 @@ MEDICAL_SOURCES = {
     },
     "cleveland": {
         "name": "Cleveland Clinic",
-        "url": "https://www.clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org",
         "abbrev": "Cleveland Clinic"
     },
     "webmd": {
@@ -1215,16 +1215,17 @@ st.markdown("""
 
     /* ===== DISCLAIMER MODAL STYLES ===== */
     .disclaimer-modal {
-        background: linear-gradient(135deg, #FDFBF7 0%, #FFF8F0 100%);
-        border: 2px solid #E8B4BC;
-        border-radius: 16px;
+        background: #FFFFFF;
+        border: 1px solid #E0E0E0;
+        border-radius: 12px;
         padding: 2rem;
-        margin: 1rem 0;
-        box-shadow: 0 8px 32px rgba(90, 122, 90, 0.15);
+        margin: 1rem auto;
+        max-width: 600px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     .disclaimer-modal h2 {
-        color: #5A7A5A;
+        color: #1A1A1A;
         font-family: 'Playfair Display', Georgia, serif;
         font-size: 1.5rem;
         margin-bottom: 1rem;
@@ -1232,22 +1233,32 @@ st.markdown("""
     }
 
     .disclaimer-modal p {
-        color: #3D4D3D;
+        color: #333333;
         font-size: 0.95rem;
         line-height: 1.6;
         margin-bottom: 0.75rem;
     }
 
+    .disclaimer-modal ul {
+        color: #333333;
+        margin-left: 1.5rem;
+    }
+
+    .disclaimer-modal li {
+        color: #333333;
+        margin-bottom: 0.25rem;
+    }
+
     .disclaimer-highlight {
-        background: #FFF0F3;
-        border-left: 4px solid #E8B4BC;
+        background: #FFF9E6;
+        border-left: 4px solid #F5A623;
         padding: 1rem;
         margin: 1rem 0;
         border-radius: 0 8px 8px 0;
     }
 
     .disclaimer-highlight p {
-        color: #5A2D3A;
+        color: #1A1A1A;
         font-weight: 500;
         margin: 0;
     }
@@ -2318,7 +2329,10 @@ def show_references():
             <h3>{src_info['icon']} {src['name']}</h3>
             <p>{src_info['description']}</p>
             <p style="margin-top: 0.5rem;"><strong>Topics covered:</strong> {src_info['topics']}</p>
-            <a href="{src['url']}" target="_blank">Visit {src['abbrev']} →</a>
+            <p style="margin-top: 0.75rem;">
+                <strong>Website:</strong>
+                <a href="{src['url']}" target="_blank" style="color: #0066CC; text-decoration: underline;">{src['url']}</a>
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2352,59 +2366,41 @@ def show_references():
 
 
 def show_dashboard():
-    """My Progress Dashboard - View all saved data"""
+    """My Data - Comprehensive view of all saved recovery data"""
     render_header()
 
     st.markdown("""
     <div class="wellness-card">
-        <h3>📊 My Progress Dashboard</h3>
-        <p style="color: #3D4D3D;">Track your recovery journey and view your history.</p>
+        <h3>📊 My Data</h3>
+        <p style="color: #3D4D3D;">View and manage all your recovery information in one place.</p>
     </div>
     """, unsafe_allow_html=True)
 
     # Privacy notice
     st.markdown("""
     <div class="privacy-badge">
-        🔒 All data is stored locally on your device only
+        🔒 All data is stored locally on your device only - never sent to any server
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    # Stats row
-    col1, col2, col3, col4 = st.columns(4)
-
-    name = st.session_state.progress_data.get('name', 'Guest')
-    procedure = st.session_state.progress_data.get('procedure', 'Not set')
+    # Get all user data
+    name = st.session_state.progress_data.get('name', 'Not set')
+    procedure_key = st.session_state.progress_data.get('procedure', '')
+    procedure_name = PROCEDURES.get(procedure_key, {}).get('name', procedure_key) if procedure_key else 'Not set'
+    surgery_date = st.session_state.progress_data.get('surgery_date', 'Not set')
+    day = st.session_state.user_data.get('day', st.session_state.progress_data.get('day', 0))
     streak = st.session_state.streak
     total_checkins = len(st.session_state.check_in_history)
+    total_journals = len([e for e in st.session_state.journal_entries.values() if e and e.strip()])
+    medications = st.session_state.progress_data.get('medications', [])
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # ===== STATS ROW =====
+    st.markdown("### 📈 Quick Stats")
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.markdown(f"""
-        <div class="stat-card">
-            <div class="stat-value">🔥 {streak}</div>
-            <div class="stat-label">Day Streak</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(f"""
-        <div class="stat-card">
-            <div class="stat-value">📋 {total_checkins}</div>
-            <div class="stat-label">Check-ins</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col3:
-        st.markdown(f"""
-        <div class="stat-card">
-            <div class="stat-value">📝 {len(st.session_state.journal_entries)}</div>
-            <div class="stat-label">Journal Entries</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col4:
-        day = st.session_state.user_data.get('day', st.session_state.progress_data.get('day', 0))
         st.markdown(f"""
         <div class="stat-card">
             <div class="stat-value">📅 {day}</div>
@@ -2412,63 +2408,286 @@ def show_dashboard():
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    # Two column layout for details
-    left_col, right_col = st.columns(2)
-
-    with left_col:
-        st.markdown("#### 👤 My Information")
-        st.markdown(f"""
-        <div style="background: #FFFFFF; border: 1px solid #E8F0E8; border-radius: 12px; padding: 1rem;">
-            <p><strong>Name:</strong> {name}</p>
-            <p><strong>Procedure:</strong> {PROCEDURES.get(procedure, {}).get('name', procedure) if procedure else 'Not set'}</p>
-            <p><strong>Surgery Date:</strong> {st.session_state.progress_data.get('surgery_date', 'Not set')}</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 📈 Pain History")
-        if st.session_state.pain_history:
-            for entry in st.session_state.pain_history[-5:]:  # Last 5 entries
-                st.markdown(f"• Day {entry.get('day', '?')}: Level {entry.get('level', '?')}/10")
-        else:
-            st.markdown("*No pain history recorded yet. Complete a check-in to start tracking.*")
-
-    with right_col:
-        st.markdown("#### 📝 Recent Journal Entries")
-        if st.session_state.journal_entries:
-            for key, entry in list(st.session_state.journal_entries.items())[-3:]:
-                if entry and entry.strip():
-                    st.markdown(f"""
-                    <div style="background: #F5F0E8; padding: 0.75rem; border-radius: 8px; margin: 0.5rem 0;">
-                        <p style="color: #2D3A2D; font-size: 0.9rem; margin: 0;">{entry[:150]}{'...' if len(entry) > 150 else ''}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-        else:
-            st.markdown("*No journal entries yet. Start writing in your recovery journal!*")
-
-        st.markdown("#### 🎯 Recovery Timeline")
-        st.markdown(f"""
-        <div style="background: #E8F5E8; padding: 1rem; border-radius: 12px;">
-            <p style="color: #3D6B3D; margin: 0;">You're doing great! Every day brings you closer to full recovery.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    # Action buttons
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        if st.button("🏠 Home", key="dash_home", use_container_width=True):
-            st.session_state.step = 'welcome'
-            st.rerun()
     with col2:
-        if st.button("📄 Export Data", key="dash_export", use_container_width=True):
-            st.info("📋 Data export coming soon! For now, take screenshots of your progress.")
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-value">🔥 {streak}</div>
+            <div class="stat-label">Day Streak</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col3:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-value">📋 {total_checkins}</div>
+            <div class="stat-label">Check-ins</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col4:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-value">📝 {total_journals}</div>
+            <div class="stat-label">Journal Entries</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # ===== MY INFORMATION =====
+    st.markdown("### 👤 My Information")
+    info_col1, info_col2 = st.columns(2)
+
+    with info_col1:
+        st.markdown(f"""
+        <div style="background: #FFFFFF; border: 1px solid #E8F0E8; border-radius: 12px; padding: 1.25rem;">
+            <p style="margin: 0.5rem 0;"><strong>Name:</strong> {name}</p>
+            <p style="margin: 0.5rem 0;"><strong>Procedure:</strong> {procedure_name}</p>
+            <p style="margin: 0.5rem 0;"><strong>Surgery Date:</strong> {surgery_date}</p>
+            <p style="margin: 0.5rem 0;"><strong>Recovery Day:</strong> Day {day}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with info_col2:
+        st.markdown(f"""
+        <div style="background: #F5F0E8; border: 1px solid #E8D5C4; border-radius: 12px; padding: 1.25rem;">
+            <p style="margin: 0; font-weight: 600; color: #5A7A5A;">🎯 Recovery Progress</p>
+            <p style="margin: 0.5rem 0; color: #3D4D3D;">You've completed {total_checkins} check-in{'s' if total_checkins != 1 else ''}</p>
+            <p style="margin: 0.5rem 0; color: #3D4D3D;">You've written {total_journals} journal entr{'ies' if total_journals != 1 else 'y'}</p>
+            <p style="margin: 0.5rem 0; color: #3D4D3D;">Current streak: {streak} day{'s' if streak != 1 else ''}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # ===== PAIN TREND CHART =====
+    st.markdown("### 📈 Pain Trend")
+    if st.session_state.pain_history and len(st.session_state.pain_history) > 0:
+        import pandas as pd
+
+        # Create dataframe for chart
+        pain_data = []
+        for entry in st.session_state.pain_history:
+            pain_data.append({
+                'Day': f"Day {entry.get('day', '?')}",
+                'Pain Level': entry.get('level', 0),
+                'Date': entry.get('date', '')
+            })
+
+        df = pd.DataFrame(pain_data)
+
+        if len(df) > 1:
+            st.line_chart(df.set_index('Day')['Pain Level'], height=200, use_container_width=True)
+        else:
+            st.bar_chart(df.set_index('Day')['Pain Level'], height=200, use_container_width=True)
+
+        # Show average
+        avg_pain = sum(e.get('level', 0) for e in st.session_state.pain_history) / len(st.session_state.pain_history)
+        st.markdown(f"**Average pain level:** {avg_pain:.1f}/10")
+    else:
+        st.markdown("""
+        <div style="background: #F5F5F5; padding: 1.5rem; border-radius: 12px; text-align: center;">
+            <p style="color: #666; margin: 0;">📊 No pain data recorded yet. Complete a daily check-in to start tracking your pain levels.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # ===== CHECK-IN HISTORY =====
+    st.markdown("### 📋 Check-in History")
+    if st.session_state.check_in_history and len(st.session_state.check_in_history) > 0:
+        # Show all check-ins in an expandable section
+        with st.expander(f"View all {len(st.session_state.check_in_history)} check-ins", expanded=False):
+            for i, checkin in enumerate(reversed(st.session_state.check_in_history)):
+                checkin_day = checkin.get('day', '?')
+                checkin_date = checkin.get('date', 'Unknown date')
+                pain_level = checkin.get('pain_level', 'N/A')
+                mood = checkin.get('mood', 'N/A')
+                symptoms = checkin.get('symptoms', [])
+
+                st.markdown(f"""
+                <div style="background: #FFFFFF; border: 1px solid #E8F0E8; border-radius: 8px; padding: 1rem; margin: 0.5rem 0;">
+                    <p style="font-weight: 600; color: #5A7A5A; margin: 0;">Day {checkin_day} - {checkin_date}</p>
+                    <p style="margin: 0.25rem 0; color: #3D4D3D;">Pain: {pain_level}/10 • Mood: {mood}</p>
+                    {f'<p style="margin: 0.25rem 0; color: #666; font-size: 0.9rem;">Symptoms: {", ".join(symptoms)}</p>' if symptoms else ''}
+                </div>
+                """, unsafe_allow_html=True)
+
+        # Show recent check-ins summary
+        st.markdown("**Recent check-ins:**")
+        for entry in st.session_state.check_in_history[-5:]:
+            checkin_date = entry.get('date', 'Unknown')
+            pain = entry.get('pain_level', 'N/A')
+            st.markdown(f"• Day {entry.get('day', '?')} ({checkin_date}): Pain {pain}/10")
+    else:
+        st.markdown("""
+        <div style="background: #F5F5F5; padding: 1.5rem; border-radius: 12px; text-align: center;">
+            <p style="color: #666; margin: 0;">📋 No check-ins recorded yet. Start your first daily check-in!</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # ===== JOURNAL ENTRIES =====
+    st.markdown("### 📝 Journal Entries")
+    journal_entries = [(k, v) for k, v in st.session_state.journal_entries.items() if v and v.strip()]
+
+    if journal_entries:
+        with st.expander(f"View all {len(journal_entries)} journal entries", expanded=False):
+            for key, entry in reversed(journal_entries):
+                st.markdown(f"""
+                <div style="background: #FFF9F0; border-left: 4px solid #E8B4BC; border-radius: 0 8px 8px 0; padding: 1rem; margin: 0.5rem 0;">
+                    <p style="font-size: 0.8rem; color: #8B9B8B; margin: 0 0 0.5rem 0;">Entry: {key}</p>
+                    <p style="color: #2D3A2D; margin: 0; white-space: pre-wrap;">{entry}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+        # Show recent entries
+        st.markdown("**Recent entries:**")
+        for key, entry in journal_entries[-3:]:
+            preview = entry[:100] + '...' if len(entry) > 100 else entry
+            st.markdown(f"• *\"{preview}\"*")
+    else:
+        st.markdown("""
+        <div style="background: #F5F5F5; padding: 1.5rem; border-radius: 12px; text-align: center;">
+            <p style="color: #666; margin: 0;">📝 No journal entries yet. Express your thoughts in the Emotional Check-in section!</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # ===== MEDICATIONS =====
+    st.markdown("### 💊 Medications")
+    if medications:
+        for med in medications:
+            st.markdown(f"• {med}")
+    else:
+        st.markdown("""
+        <div style="background: #F5F5F5; padding: 1rem; border-radius: 12px;">
+            <p style="color: #666; margin: 0;">No medications recorded. You can add medications below.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Add medication input
+    with st.expander("➕ Add a medication"):
+        new_med = st.text_input("Medication name", key="new_medication_input", placeholder="e.g., Ibuprofen 400mg")
+        if st.button("Add Medication", key="btn_add_med"):
+            if new_med.strip():
+                if 'medications' not in st.session_state.progress_data:
+                    st.session_state.progress_data['medications'] = []
+                st.session_state.progress_data['medications'].append(new_med.strip())
+                save_progress()
+                st.success(f"Added: {new_med}")
+                st.rerun()
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # ===== ACTION BUTTONS =====
+    st.markdown("### ⚡ Actions")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
         if st.button("✏️ Edit My Info", key="dash_edit", use_container_width=True):
             st.session_state.step = 'get_info'
             st.rerun()
+
+    with col2:
+        # Export data button
+        if st.button("📤 Export My Data", key="dash_export", use_container_width=True):
+            st.session_state.show_export = True
+
+    with col3:
+        if st.button("🗑️ Clear All Data", key="dash_clear", use_container_width=True, type="secondary"):
+            st.session_state.show_clear_confirm = True
+
+    # Export data section
+    if st.session_state.get('show_export', False):
+        st.markdown("---")
+        st.markdown("#### 📤 Export Your Data")
+
+        # Create export data
+        import json
+        from datetime import datetime as dt_export
+
+        export_data = {
+            "exported_at": dt_export.now().isoformat(),
+            "app_version": APP_VERSION,
+            "user_info": {
+                "name": name,
+                "procedure": procedure_name,
+                "surgery_date": surgery_date,
+                "recovery_day": day
+            },
+            "stats": {
+                "streak": streak,
+                "total_checkins": total_checkins,
+                "total_journal_entries": total_journals
+            },
+            "pain_history": st.session_state.pain_history,
+            "check_in_history": st.session_state.check_in_history,
+            "journal_entries": dict(st.session_state.journal_entries),
+            "medications": medications
+        }
+
+        export_json = json.dumps(export_data, indent=2)
+
+        st.download_button(
+            label="⬇️ Download JSON",
+            data=export_json,
+            file_name=f"recovery_buddy_export_{dt_export.now().strftime('%Y%m%d')}.json",
+            mime="application/json",
+            key="download_json"
+        )
+
+        # Also show as text for copy/paste
+        with st.expander("View export data"):
+            st.code(export_json, language="json")
+
+        if st.button("Close Export", key="close_export"):
+            st.session_state.show_export = False
+            st.rerun()
+
+    # Clear data confirmation
+    if st.session_state.get('show_clear_confirm', False):
+        st.markdown("---")
+        st.markdown("""
+        <div style="background: #FFF0F0; border: 2px solid #E74C3C; border-radius: 12px; padding: 1.5rem; margin: 1rem 0;">
+            <h4 style="color: #C0392B; margin: 0 0 0.5rem 0;">⚠️ Are you sure?</h4>
+            <p style="color: #333; margin: 0;">This will permanently delete all your recovery data including check-ins, journal entries, and progress history. This action cannot be undone.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        confirm_col1, confirm_col2 = st.columns(2)
+        with confirm_col1:
+            if st.button("❌ Cancel", key="cancel_clear", use_container_width=True):
+                st.session_state.show_clear_confirm = False
+                st.rerun()
+        with confirm_col2:
+            if st.button("🗑️ Yes, Delete Everything", key="confirm_clear", use_container_width=True, type="primary"):
+                # Clear all data
+                st.session_state.progress_data = {}
+                st.session_state.user_data = {}
+                st.session_state.pain_history = []
+                st.session_state.check_in_history = []
+                st.session_state.journal_entries = {}
+                st.session_state.streak = 0
+                st.session_state.is_returning_user = False
+
+                # Delete local file
+                if os.path.exists(LOCAL_DATA_FILE):
+                    os.remove(LOCAL_DATA_FILE)
+
+                st.session_state.show_clear_confirm = False
+                st.success("All data has been cleared.")
+                st.session_state.step = 'welcome'
+                st.rerun()
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Home button
+    if st.button("🏠 Back to Home", key="dash_home", use_container_width=True):
+        st.session_state.step = 'welcome'
+        st.rerun()
 
 
 def show_about():
@@ -2714,7 +2933,7 @@ def main():
             </div>
 
             <p><strong>Recovery Buddy does NOT:</strong></p>
-            <ul style="color: #3D4D3D; margin-left: 1.5rem;">
+            <ul>
                 <li>Provide medical diagnosis or treatment recommendations</li>
                 <li>Replace professional medical advice from your surgeon</li>
                 <li>Serve as an emergency medical resource</li>
@@ -2722,11 +2941,11 @@ def main():
 
             <p><strong>Always consult your surgeon or healthcare provider</strong> for personalized medical guidance about your recovery.</p>
 
-            <div class="emergency-banner">
-                <p>🚨 If you are experiencing a medical emergency, call 911 or go to the nearest emergency room immediately.</p>
+            <div style="background: #FFF0F0; border: 1px solid #E74C3C; border-radius: 8px; padding: 1rem; margin: 1rem 0; text-align: center;">
+                <p style="color: #C0392B; font-weight: 600; margin: 0;">🚨 If you are experiencing a medical emergency, call 911 or go to the nearest emergency room immediately.</p>
             </div>
 
-            <p style="font-size: 0.85rem; color: #6B8B6B; text-align: center; margin-top: 1rem;">
+            <p style="font-size: 0.85rem; color: #666666; text-align: center; margin-top: 1rem;">
                 <em>Information compiled from board-certified medical sources including the American Society of Plastic Surgeons,
                 Mayo Clinic, Cleveland Clinic, WebMD, and RealSelf.</em>
             </p>
@@ -2774,6 +2993,12 @@ def main():
 
     # Sidebar with dark mode and emergency info
     with st.sidebar:
+        st.markdown("### 📊 Navigation")
+        if st.button("📊 My Data", key="sidebar_my_data", use_container_width=True):
+            st.session_state.step = 'dashboard'
+            st.rerun()
+
+        st.markdown("---")
         st.markdown("### ⚙️ Settings")
         dark_mode = st.toggle("🌙 Dark Mode", value=st.session_state.dark_mode, key="toggle_dark_mode")
         if dark_mode != st.session_state.dark_mode:
@@ -2995,7 +3220,7 @@ def show_welcome():
             st.session_state.step = 'get_info'
             st.rerun()
     with btn_col2:
-        if st.button("📊 My Progress", key="btn_progress", use_container_width=True):
+        if st.button("📊 My Data", key="btn_progress", use_container_width=True):
             st.session_state.step = 'dashboard'
             st.rerun()
     with btn_col3:
