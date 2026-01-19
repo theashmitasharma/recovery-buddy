@@ -4197,116 +4197,81 @@ def show_welcome():
         except:
             recovery_day = 0
 
-    # Wide layout with two columns
+    # Welcome header
     if is_returning:
-        # Time-based greeting for returning users
         greeting = get_time_greeting(saved_name)
-        mascot = get_mascot_message(recovery_day) if recovery_day > 0 else {"emoji": "🌸", "message": "Welcome back to your recovery journey!"}
+        st.header(greeting)
 
-        st.markdown(f"""
-        <div class="welcome-back-card" style="background: linear-gradient(135deg, #F8FDF8 0%, #E8F5E8 100%); border: 2px solid #A8C5A8; border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
-            <h3 style="color: #5A7A5A; margin: 0; font-size: 1.3rem;">{greeting}</h3>
-            <div style="display: flex; align-items: center; margin-top: 0.75rem;">
-                <span style="font-size: 2rem; margin-right: 0.75rem;">{mascot['emoji']}</span>
-                <p style="color: #3D4D3D; margin: 0; font-style: italic;">"{mascot['message']}"</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        mascot = get_mascot_message(recovery_day) if recovery_day > 0 else {"emoji": "🌸", "message": "Welcome back to your recovery journey!"}
+        st.write(f"{mascot['emoji']} *\"{mascot['message']}\"*")
 
         # Show recovery milestone if applicable
         if recovery_day > 0:
-            # Find the most recent milestone
             milestone_days = sorted([d for d in RECOVERY_MILESTONES.keys() if d <= recovery_day], reverse=True)
             if milestone_days:
                 milestone = RECOVERY_MILESTONES[milestone_days[0]]
-                st.markdown(f"""
-                <div style="background: linear-gradient(135deg, #FFF8F0 0%, #FFEFD5 100%); border: 1px solid #FFD700; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
-                    <p style="margin: 0; color: #B8860B;">
-                        {milestone['icon']} <strong>{milestone['title']}</strong> — Day {recovery_day} of Recovery
-                    </p>
-                    <p style="margin: 0.5rem 0 0 0; color: #8B7355; font-size: 0.9rem;">{milestone['message']}</p>
-                </div>
-                """, unsafe_allow_html=True)
+                st.success(f"{milestone['icon']} **{milestone['title']}** — Day {recovery_day} of Recovery\n\n{milestone['message']}")
 
-        # Show last check-in info if available
+        # Show stats
         last_check = st.session_state.progress_data.get('last_check_in')
         if last_check:
-            st.markdown(f"""
-            <p style="color: #6B8B6B; font-size: 0.85rem;">
-                📅 Last check-in: {last_check} • 🔥 Streak: {st.session_state.streak} days
-            </p>
-            """, unsafe_allow_html=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("📅 Last Check-in", last_check)
+            with col2:
+                st.metric("🔥 Streak", f"{st.session_state.streak} days")
 
-    # Main content in columns for wide layout
-    col_left, col_right = st.columns([1, 1])
+    else:
+        st.header("🌸 Welcome to Recovery Buddy")
+        st.write("I'm here to support you through your post-surgery healing journey.")
 
-    with col_left:
-        st.markdown("""
-        <div class="wellness-card">
-            <div class="emoji-large">🌸</div>
-            <h3 style="text-align: center;">Welcome to Your Recovery Journey</h3>
-            <p style="text-align: center; color: #3D4D3D; line-height: 1.8;">
-                I'm here to support you through your post-surgery healing. Together, we'll check in on how you're feeling,
-                track your progress, and make sure you have the information you need to recover with confidence.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # Random affirmation
-        affirmation = random.choice(AFFIRMATIONS)
-        st.markdown(f"""
-        <div class="affirmation">{affirmation}</div>
-        """, unsafe_allow_html=True)
-
-    with col_right:
-        # Daily Tip of the Day
-        daily_tip = DAILY_TIPS[st.session_state.daily_tip_index]
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #FFF9F0 0%, #FFE8D6 100%); border: 1px solid #DEB887; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-            <p style="margin: 0; color: #8B4513; font-weight: 600;">
-                {daily_tip['icon']} Tip of the Day
-            </p>
-            <p style="margin: 0.5rem 0 0 0; color: #654321; font-size: 0.95rem;">
-                {daily_tip['tip']}
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="info-box">
-            <p>✨ <strong>What we'll do together:</strong></p>
-            <p style="margin-top: 0.5rem;">
-                • Check your physical symptoms<br>
-                • Support your emotional wellbeing<br>
-                • Provide personalized daily tips<br>
-                • Track your healing progress
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # Privacy notice
-        st.markdown("""
-        <div class="privacy-badge" style="margin-top: 1rem;">
-            🔒 <strong>Your data stays on your device</strong> — We don't collect or store your personal information on external servers.
-        </div>
-        """, unsafe_allow_html=True)
-
-        # Medical review date
-        st.markdown(f"""
-        <p style="color: #8B9B8B; font-size: 0.75rem; margin-top: 0.75rem;">
-            📚 Medical information last reviewed: {LAST_MEDICAL_REVIEW}
-        </p>
-        """, unsafe_allow_html=True)
-
-    # Main action button - Begin Check-In
     st.divider()
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🩺 Begin Daily Check-In", key="btn_begin", type="primary", use_container_width=True):
-            st.session_state.step = 'get_info'
-            st.rerun()
+    # Two column layout
+    col_left, col_right = st.columns(2)
 
+    with col_left:
+        st.subheader("✨ Today's Affirmation")
+        affirmation = random.choice(AFFIRMATIONS)
+        st.info(f"*\"{affirmation}\"*")
+
+        st.subheader("🌟 What We Do Together")
+        st.write("• Check your physical symptoms")
+        st.write("• Support your emotional wellbeing")
+        st.write("• Provide personalized daily tips")
+        st.write("• Track your healing progress")
+
+    with col_right:
+        # Daily Tip
+        daily_tip = DAILY_TIPS[st.session_state.daily_tip_index]
+        st.subheader(f"{daily_tip['icon']} Tip of the Day")
+        st.warning(daily_tip['tip'])
+
+        # Quick mood check
+        st.subheader("😊 Quick Mood Check")
+        st.write("How are you feeling right now?")
+        mood_cols = st.columns(4)
+        moods = [("😢", "Struggling"), ("😐", "Okay"), ("🙂", "Good"), ("😊", "Great")]
+        for i, (emoji, label) in enumerate(moods):
+            with mood_cols[i]:
+                if st.button(emoji, key=f"quick_mood_{label}", help=label, use_container_width=True):
+                    # Save quick mood
+                    mood_entry = {
+                        'date': datetime.now().strftime('%Y-%m-%d'),
+                        'time': datetime.now().strftime('%H:%M'),
+                        'mood': label,
+                        'emoji': emoji
+                    }
+                    st.session_state.mood_history.append(mood_entry)
+                    st.session_state.progress_data['mood_history'] = st.session_state.mood_history
+                    save_progress(st.session_state.progress_data)
+                    st.toast(f"Mood logged: {emoji} {label}")
+
+    st.divider()
+
+    # Privacy and disclaimer
+    st.info("🔒 **Your data stays on your device** — We don't collect or store your personal information on external servers.")
+    st.caption(f"📚 Medical information last reviewed: {LAST_MEDICAL_REVIEW}")
     st.caption("💚 Remember: I'm here to support you, not replace medical advice. Always follow your surgeon's instructions.")
 
 
