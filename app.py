@@ -1131,6 +1131,82 @@ st.markdown("""
         color: #5A7A5A;
     }
 
+    /* ===== DISCLAIMER MODAL STYLES ===== */
+    .disclaimer-modal {
+        background: linear-gradient(135deg, #FDFBF7 0%, #FFF8F0 100%);
+        border: 2px solid #E8B4BC;
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 1rem 0;
+        box-shadow: 0 8px 32px rgba(90, 122, 90, 0.15);
+    }
+
+    .disclaimer-modal h2 {
+        color: #5A7A5A;
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .disclaimer-modal p {
+        color: #3D4D3D;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
+    }
+
+    .disclaimer-highlight {
+        background: #FFF0F3;
+        border-left: 4px solid #E8B4BC;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .disclaimer-highlight p {
+        color: #5A2D3A;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    /* ===== EMERGENCY WARNING STYLES ===== */
+    .emergency-banner {
+        background: linear-gradient(135deg, #FFE5E5 0%, #FFF0F0 100%);
+        border: 2px solid #E74C3C;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0;
+        text-align: center;
+    }
+
+    .emergency-banner p {
+        color: #C0392B;
+        font-weight: 600;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .emergency-banner a {
+        color: #E74C3C;
+        text-decoration: underline;
+    }
+
+    .consult-doctor-reminder {
+        background: #F0F8F0;
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        margin-top: 0.75rem;
+        font-size: 0.8rem;
+        color: #5A7A5A;
+        text-align: center;
+    }
+
+    .consult-doctor-reminder a {
+        color: #3D6B3D;
+        text-decoration: underline;
+    }
+
     /* ===== CITATION STYLES ===== */
     .citation-inline {
         font-size: 0.75rem;
@@ -1789,18 +1865,38 @@ Thank you,
     },
 }
 
-# Journaling prompts
+# Journaling prompts - 25+ rotating prompts
 JOURNALING_PROMPTS = [
+    {"prompt": "What are you grateful for today?", "category": "gratitude"},
+    {"prompt": "How has your energy level been?", "category": "wellness"},
+    {"prompt": "What's one thing that made you smile today?", "category": "positivity"},
+    {"prompt": "Describe how your body feels right now.", "category": "awareness"},
+    {"prompt": "What are you looking forward to?", "category": "hope"},
+    {"prompt": "How did you sleep last night?", "category": "wellness"},
+    {"prompt": "What self-care did you do today?", "category": "self-care"},
+    {"prompt": "Write about your healing progress.", "category": "reflection"},
+    {"prompt": "What emotions came up today?", "category": "emotional"},
+    {"prompt": "What would you tell someone else going through this?", "category": "wisdom"},
     {"prompt": "Why did you decide to have this procedure? What made now the right time?", "category": "reflection"},
     {"prompt": "Write a letter to your future healed self. What do you hope to feel?", "category": "hope"},
     {"prompt": "What are you most looking forward to when you're fully healed?", "category": "goals"},
     {"prompt": "How has your support system shown up for you during recovery?", "category": "gratitude"},
     {"prompt": "What's one kind thing you can do for yourself today?", "category": "self-care"},
     {"prompt": "Describe a moment today when you felt strong or brave.", "category": "strength"},
-    {"prompt": "What would you tell a friend going through the same recovery?", "category": "wisdom"},
     {"prompt": "List three things your body has done for you today.", "category": "gratitude"},
     {"prompt": "What fear about recovery has turned out to be unfounded?", "category": "reflection"},
     {"prompt": "How do you want to feel in one month? In three months?", "category": "goals"},
+    {"prompt": "What small victory can you celebrate today?", "category": "positivity"},
+    {"prompt": "How are you being patient with yourself during recovery?", "category": "self-care"},
+    {"prompt": "What has surprised you most about your recovery?", "category": "reflection"},
+    {"prompt": "Describe your perfect day once you're fully healed.", "category": "hope"},
+    {"prompt": "What have you learned about yourself through this experience?", "category": "wisdom"},
+    {"prompt": "How has your perspective on your body changed?", "category": "awareness"},
+    {"prompt": "What comfort items have helped you most during recovery?", "category": "self-care"},
+    {"prompt": "Write about a kind gesture someone did for you recently.", "category": "gratitude"},
+    {"prompt": "What does healing mean to you beyond the physical?", "category": "emotional"},
+    {"prompt": "How are you staying positive during challenging moments?", "category": "strength"},
+    {"prompt": "What advice would you give yourself from day one of recovery?", "category": "wisdom"},
 ]
 
 # Daily recovery checklist
@@ -2075,7 +2171,14 @@ def show_references():
 
     st.markdown("""
     <div class="legal-page">
-        <h1>📚 Medical References</h1>
+        <h1>📚 Medical Sources & References</h1>
+
+        <div style="background: linear-gradient(135deg, #E8F5E8 0%, #F0FFF0 100%);
+                    border: 1px solid #A8C5A8; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
+            <p style="color: #3D6B3D; font-weight: 600; margin: 0; font-size: 1rem;">
+                ✅ Information compiled from board-certified medical sources
+            </p>
+        </div>
 
         <p style="text-align: center; margin-bottom: 1.5rem;">
             The medical information in Recovery Buddy is compiled from the following credible healthcare sources.
@@ -2194,6 +2297,45 @@ def main():
         st.session_state.celebration_shown = False
     if 'celebration_style' not in st.session_state:
         st.session_state.celebration_style = "🎈 Balloons"
+    if 'disclaimer_accepted' not in st.session_state:
+        st.session_state.disclaimer_accepted = False
+
+    # Show disclaimer popup on first visit
+    if not st.session_state.disclaimer_accepted:
+        st.markdown("""
+        <div class="disclaimer-modal">
+            <h2>⚠️ Important Medical Disclaimer</h2>
+
+            <div class="disclaimer-highlight">
+                <p>🏥 This app provides <strong>general recovery information only</strong> and is NOT medical advice.</p>
+            </div>
+
+            <p><strong>Recovery Buddy does NOT:</strong></p>
+            <ul style="color: #3D4D3D; margin-left: 1.5rem;">
+                <li>Provide medical diagnosis or treatment recommendations</li>
+                <li>Replace professional medical advice from your surgeon</li>
+                <li>Serve as an emergency medical resource</li>
+            </ul>
+
+            <p><strong>Always consult your surgeon or healthcare provider</strong> for personalized medical guidance about your recovery.</p>
+
+            <div class="emergency-banner">
+                <p>🚨 If you are experiencing a medical emergency, call 911 or go to the nearest emergency room immediately.</p>
+            </div>
+
+            <p style="font-size: 0.85rem; color: #6B8B6B; text-align: center; margin-top: 1rem;">
+                <em>Information compiled from board-certified medical sources including the American Society of Plastic Surgeons,
+                Mayo Clinic, Cleveland Clinic, WebMD, and RealSelf.</em>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("I Understand - Continue to App", key="btn_accept_disclaimer", type="primary", use_container_width=True):
+                st.session_state.disclaimer_accepted = True
+                st.rerun()
+        return  # Don't show rest of app until disclaimer accepted
 
     # Apply dark mode if enabled
     if st.session_state.dark_mode:
@@ -2257,26 +2399,54 @@ def main():
 
         st.markdown("---")
 
+        # PROMINENT Emergency Warning Banner
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #FFE5E5 0%, #FFCCCC 100%);
+                    border: 2px solid #E74C3C; border-radius: 10px; padding: 0.75rem; margin-bottom: 1rem; text-align: center;">
+            <p style="color: #C0392B; font-weight: 700; margin: 0; font-size: 0.9rem;">
+                🚨 MEDICAL EMERGENCY?
+            </p>
+            <p style="color: #E74C3C; margin: 0.25rem 0 0 0; font-size: 0.85rem; font-weight: 600;">
+                Call 911 or go to the ER
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
         # Emergency Info Box - Always visible
         st.markdown("### 🚨 Emergency Info")
 
-        # Call 911 section
-        show_911 = st.checkbox("🔴 Call 911 Immediately If:", key="show_911")
+        # Call 911 section - more prominent
+        st.markdown("""
+        <p style="color: #C0392B; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            🔴 <strong>Call 911 Immediately If:</strong>
+        </p>
+        """, unsafe_allow_html=True)
+        show_911 = st.checkbox("Show 911 warning signs", key="show_911", value=False)
         if show_911:
             for item in EMERGENCY_INFO["call_911"]:
-                st.markdown(f"&nbsp;&nbsp;&nbsp;🔴 {item}")
+                st.markdown(f"<p style='color: #C0392B; font-size: 0.85rem; margin: 0.25rem 0 0.25rem 1rem;'>🔴 {item}</p>", unsafe_allow_html=True)
 
         # Call Surgeon Urgently section
-        show_urgent = st.checkbox("🟠 Call Surgeon Urgently If:", key="show_urgent")
+        st.markdown("""
+        <p style="color: #E67E22; font-weight: 600; font-size: 0.9rem; margin: 0.75rem 0 0.5rem 0;">
+            🟠 <strong>Call Surgeon Urgently If:</strong>
+        </p>
+        """, unsafe_allow_html=True)
+        show_urgent = st.checkbox("Show urgent warning signs", key="show_urgent", value=False)
         if show_urgent:
             for item in EMERGENCY_INFO["call_surgeon_urgent"]:
-                st.markdown(f"&nbsp;&nbsp;&nbsp;🟠 {item}")
+                st.markdown(f"<p style='color: #E67E22; font-size: 0.85rem; margin: 0.25rem 0 0.25rem 1rem;'>🟠 {item}</p>", unsafe_allow_html=True)
 
         # Call Surgeon Soon section
-        show_soon = st.checkbox("🟡 Call Surgeon Soon If:", key="show_soon")
+        st.markdown("""
+        <p style="color: #F1C40F; font-weight: 600; font-size: 0.9rem; margin: 0.75rem 0 0.5rem 0;">
+            🟡 <strong>Call Surgeon Soon If:</strong>
+        </p>
+        """, unsafe_allow_html=True)
+        show_soon = st.checkbox("Show other warning signs", key="show_soon", value=False)
         if show_soon:
             for item in EMERGENCY_INFO["call_surgeon_soon"]:
-                st.markdown(f"&nbsp;&nbsp;&nbsp;🟡 {item}")
+                st.markdown(f"<p style='color: #B7950B; font-size: 0.85rem; margin: 0.25rem 0 0.25rem 1rem;'>🟡 {item}</p>", unsafe_allow_html=True)
 
         st.markdown("---")
         st.markdown("""
@@ -2471,6 +2641,16 @@ def show_physical_checkin():
     <div class="wellness-card">
         <h3>🩺 Physical Check-In</h3>
         <p style="color: #3D4D3D;">Day {day} — Let's see how your body is healing, {name}.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Symptom checker disclaimer
+    st.markdown("""
+    <div style="background: #FFF8F0; border: 1px solid #E8B4BC; border-radius: 10px; padding: 0.75rem 1rem; margin: 0.5rem 0 1rem 0;">
+        <p style="color: #5A2D3A; font-size: 0.85rem; margin: 0;">
+            ⚠️ <strong>Not a Diagnosis Tool:</strong> This check-in helps you track symptoms for your records.
+            It does not diagnose conditions. Always consult your surgeon about any concerns.
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -2707,6 +2887,14 @@ def show_symptom_results():
             </div>
             """, unsafe_allow_html=True)
 
+    # Consult doctor reminder
+    st.markdown("""
+    <div class="consult-doctor-reminder">
+        👩‍⚕️ <strong>Remember:</strong> Always consult your surgeon if you have concerns about your symptoms.
+        <a href="#" onclick="return false;">View Medical Sources</a>
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("<br>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -2924,6 +3112,9 @@ def show_daily_tip():
         📚 Recovery guidance from <a href="https://www.mayoclinic.org" target="_blank">Mayo Clinic</a>,
         <a href="https://www.clevelandclinic.org" target="_blank">Cleveland Clinic</a>, and
         <a href="https://www.webmd.com" target="_blank">WebMD</a>
+    </div>
+    <div class="consult-doctor-reminder">
+        👩‍⚕️ <strong>Tip:</strong> These are general guidelines. Your surgeon's specific instructions take priority.
     </div>
     """, unsafe_allow_html=True)
 
@@ -3300,17 +3491,24 @@ def show_complete():
 
     show_journal = st.checkbox("📓 Click to write in your recovery journal", key="show_journal")
     if show_journal:
-        # Get today's prompt
+        # Get random prompt - changes each time journal is opened
         import random
-        prompt_index = day % len(JOURNALING_PROMPTS)
-        today_prompt = JOURNALING_PROMPTS[prompt_index]
+        import hashlib
+        # Use a combination of date and session to get different prompt each session
+        from datetime import datetime
+        seed_str = f"{datetime.now().strftime('%Y%m%d%H')}{id(st.session_state)}"
+        random.seed(int(hashlib.md5(seed_str.encode()).hexdigest(), 16) % (10**9))
+        today_prompt = random.choice(JOURNALING_PROMPTS)
 
         st.markdown(f"""
         <div style="background: linear-gradient(135deg, #FDF2F4 0%, #FFFFFF 100%);
                     padding: 1.25rem; border-radius: 12px; margin-bottom: 1rem;">
-            <p style="color: #5A2D3A; font-weight: 600; margin: 0;">Today's Prompt:</p>
+            <p style="color: #5A2D3A; font-weight: 600; margin: 0;">💭 Today's Prompt:</p>
             <p style="color: #2D3A2D; font-size: 1.1rem; font-style: italic; margin: 0.5rem 0 0 0;">
                 "{today_prompt['prompt']}"
+            </p>
+            <p style="color: #8B9B8B; font-size: 0.75rem; margin-top: 0.5rem;">
+                <em>Prompts rotate randomly • {len(JOURNALING_PROMPTS)} prompts available</em>
             </p>
         </div>
         """, unsafe_allow_html=True)
