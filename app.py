@@ -2870,101 +2870,68 @@ def show_references():
     """Display Medical References page"""
     render_header()
 
-    st.markdown("""
-    <div class="legal-page">
-        <h1>📚 Medical Sources & References</h1>
+    st.header("📚 Medical Sources & References")
 
-        <div style="background: linear-gradient(135deg, #E8F5E8 0%, #F0FFF0 100%);
-                    border: 1px solid #A8C5A8; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
-            <p style="color: #3D6B3D; font-weight: 600; margin: 0; font-size: 1rem;">
-                ✅ Information compiled from board-certified medical sources
-            </p>
-        </div>
+    st.success("✅ Information compiled from board-certified medical sources")
 
-        <p style="text-align: center; margin-bottom: 1.5rem;">
-            The medical information in Recovery Buddy is compiled from the following credible healthcare sources.
-            Always consult with your healthcare provider for personalized medical advice.
-        </p>
+    st.write("The medical information in Recovery Buddy is compiled from the following credible healthcare sources. Always consult with your healthcare provider for personalized medical advice.")
 
-        <div class="warning-box" style="margin-bottom: 1.5rem;">
-            <p><strong>⚠️ Medical Disclaimer:</strong> Recovery Buddy provides general information for educational purposes only.
-            This app is not a substitute for professional medical advice, diagnosis, or treatment.
-            Always seek the advice of your surgeon or qualified healthcare provider with any questions about your recovery.</p>
-        </div>
+    st.warning("⚠️ **Medical Disclaimer:** Recovery Buddy provides general information for educational purposes only. This app is not a substitute for professional medical advice, diagnosis, or treatment.")
 
-        <h2>Our Sources</h2>
-    </div>
-    """, unsafe_allow_html=True)
+    st.subheader("Our Sources")
 
-    # Source cards
-    sources_info = [
-        {
-            "key": "asps",
-            "icon": "🏥",
-            "description": "The largest plastic surgery specialty organization, providing patient safety information and procedural guidelines.",
-            "topics": "Procedure information, recovery timelines, safety guidelines"
-        },
-        {
-            "key": "mayo",
-            "icon": "🏛️",
-            "description": "World-renowned nonprofit medical center providing expert health information reviewed by medical professionals.",
-            "topics": "Symptoms, warning signs, general recovery guidance"
-        },
-        {
-            "key": "cleveland",
-            "icon": "💚",
-            "description": "Top-ranked hospital providing trusted health information backed by their medical experts.",
-            "topics": "Post-surgical care, pain management, healing timelines"
-        },
-        {
-            "key": "webmd",
-            "icon": "🌐",
-            "description": "Leading health information services platform with physician-reviewed content.",
-            "topics": "General recovery tips, symptom tracking, wellness guidance"
-        },
-        {
-            "key": "realself",
-            "icon": "✨",
-            "description": "Trusted community platform with doctor-verified information about cosmetic procedures.",
-            "topics": "Patient experiences, procedure-specific recovery, realistic expectations"
-        }
-    ]
+    # Source information
+    st.write("**🏥 American Society of Plastic Surgeons (ASPS)**")
+    st.write("The largest plastic surgery specialty organization, providing patient safety information and procedural guidelines.")
+    st.write("Topics: Procedure information, recovery timelines, safety guidelines")
+    st.write("[Visit Website](https://www.plasticsurgery.org)")
 
-    for src_info in sources_info:
-        src = MEDICAL_SOURCES[src_info["key"]]
-        st.markdown(f"""
-        <div class="source-card">
-            <h3>{src_info['icon']} {src['name']}</h3>
-            <p>{src_info['description']}</p>
-            <p style="margin-top: 0.5rem;"><strong>Topics covered:</strong> {src_info['topics']}</p>
-            <p style="margin-top: 0.75rem;">
-                <strong>Website:</strong>
-                <a href="{src['url']}" target="_blank" style="color: #0066CC; text-decoration: underline;">{src['url']}</a>
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+    st.divider()
 
-    st.markdown("""
-    <div class="legal-page" style="margin-top: 1.5rem;">
-        <h2>How We Use These Sources</h2>
-        <ul>
-            <li><strong>Recovery Timelines:</strong> Based on clinical guidelines from ASPS and Cleveland Clinic</li>
-            <li><strong>Normal Symptoms:</strong> Compiled from Mayo Clinic and WebMD patient education materials</li>
-            <li><strong>Warning Signs:</strong> Sourced from ASPS safety guidelines and Cleveland Clinic emergency criteria</li>
-            <li><strong>Daily Tips:</strong> Adapted from post-operative care instructions across all sources</li>
-            <li><strong>Emotional Support:</strong> Informed by Mayo Clinic mental health resources</li>
-        </ul>
+    st.write("**🏛️ Mayo Clinic**")
+    st.write("World-renowned nonprofit medical center providing expert health information reviewed by medical professionals.")
+    st.write("Topics: Symptoms, warning signs, general recovery guidance")
+    st.write("[Visit Website](https://www.mayoclinic.org)")
 
-        <h2>Content Review</h2>
-        <p>Our recovery information is regularly reviewed and updated to ensure accuracy. Last content review: January 2026.</p>
+    st.divider()
 
-        <h2>Report an Issue</h2>
-        <p>If you notice any medical information that appears inaccurate or outdated, please contact us at
-        <a href="mailto:medical@recoverybuddy.app">medical@recoverybuddy.app</a>.</p>
+    st.write("**💚 Cleveland Clinic**")
+    st.write("Top-ranked hospital providing trusted health information backed by their medical experts.")
+    st.write("Topics: Post-surgical care, pain management, healing timelines")
+    st.write("[Visit Website](https://my.clevelandclinic.org)")
 
-        <p class="last-updated">Last updated: January 2026</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.divider()
+
+    st.write("**🌐 WebMD**")
+    st.write("Leading health information services platform with physician-reviewed content.")
+    st.write("Topics: General recovery tips, symptom tracking, wellness guidance")
+    st.write("[Visit Website](https://www.webmd.com)")
+
+    st.divider()
+
+    st.write("**✨ RealSelf**")
+    st.write("Trusted community platform with doctor-verified information about cosmetic procedures.")
+    st.write("Topics: Patient experiences, procedure-specific recovery, realistic expectations")
+    st.write("[Visit Website](https://www.realself.com)")
+
+    st.divider()
+
+    st.subheader("How We Use These Sources")
+    st.write("• **Recovery Timelines:** Based on clinical guidelines from ASPS and Cleveland Clinic")
+    st.write("• **Normal Symptoms:** Compiled from Mayo Clinic and WebMD patient education materials")
+    st.write("• **Warning Signs:** Sourced from ASPS safety guidelines and Cleveland Clinic emergency criteria")
+    st.write("• **Daily Tips:** Adapted from post-operative care instructions across all sources")
+    st.write("• **Emotional Support:** Informed by Mayo Clinic mental health resources")
+
+    st.subheader("Content Review")
+    st.write("Our recovery information is regularly reviewed and updated to ensure accuracy. Last content review: January 2026.")
+
+    st.subheader("Report an Issue")
+    st.write("If you notice any medical information that appears inaccurate or outdated, please contact us at medical@recoverybuddy.app")
+
+    st.caption("Last updated: January 2026")
+
+    st.divider()
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -3302,56 +3269,40 @@ def show_about():
     """About page with app info and credits"""
     render_header()
 
-    st.markdown("""
-    <div class="wellness-card">
-        <div class="emoji-large">🌸</div>
-        <h3 style="text-align: center;">About Recovery Buddy</h3>
-    </div>
-    """, unsafe_allow_html=True)
+    st.header("🌸 About Recovery Buddy")
 
     # Two column layout
     col_left, col_right = st.columns(2)
 
     with col_left:
-        st.markdown(f"""
-        <div class="legal-page">
-            <h2>App Information</h2>
-            <p><strong>Version:</strong> {APP_VERSION}</p>
-            <p><strong>Created by:</strong> {APP_CREATOR}</p>
-            <p><strong>Medical Review Date:</strong> {LAST_MEDICAL_REVIEW}</p>
+        st.subheader("App Information")
+        st.write(f"**Version:** {APP_VERSION}")
+        st.write(f"**Created by:** {APP_CREATOR}")
+        st.write(f"**Medical Review Date:** {LAST_MEDICAL_REVIEW}")
 
-            <h2 style="margin-top: 1.5rem;">Our Mission</h2>
-            <p>Recovery Buddy was created to provide compassionate support during your post-surgery recovery journey.
-            We believe everyone deserves access to helpful recovery information and emotional support.</p>
+        st.subheader("Our Mission")
+        st.write("Recovery Buddy was created to provide compassionate support during your post-surgery recovery journey. We believe everyone deserves access to helpful recovery information and emotional support.")
 
-            <h2 style="margin-top: 1.5rem;">Contact & Support</h2>
-            <p>📧 <strong>Email:</strong> <a href="mailto:support@recoverybuddy.app">support@recoverybuddy.app</a></p>
-            <p>💬 <strong>Feedback:</strong> <a href="mailto:feedback@recoverybuddy.app">feedback@recoverybuddy.app</a></p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.subheader("Contact & Support")
+        st.write("📧 **Email:** support@recoverybuddy.app")
+        st.write("💬 **Feedback:** feedback@recoverybuddy.app")
 
     with col_right:
-        st.markdown("""
-        <div class="legal-page">
-            <h2>Medical Sources</h2>
-            <p>Our information is compiled from board-certified medical sources:</p>
-            <ul>
-                <li>American Society of Plastic Surgeons</li>
-                <li>Mayo Clinic</li>
-                <li>Cleveland Clinic</li>
-                <li>WebMD</li>
-                <li>RealSelf</li>
-            </ul>
+        st.subheader("Medical Sources")
+        st.write("Our information is compiled from board-certified medical sources:")
+        st.write("• American Society of Plastic Surgeons")
+        st.write("• Mayo Clinic")
+        st.write("• Cleveland Clinic")
+        st.write("• WebMD")
+        st.write("• RealSelf")
 
-            <h2 style="margin-top: 1.5rem;">Privacy & Data</h2>
-            <p>🔒 <strong>Your data stays on your device.</strong> We do not collect, store, or share your personal information on external servers.</p>
+        st.subheader("Privacy & Data")
+        st.info("🔒 **Your data stays on your device.** We do not collect, store, or share your personal information on external servers.")
 
-            <h2 style="margin-top: 1.5rem;">Disclaimer</h2>
-            <p>This app provides general information only and is NOT medical advice. Always consult your surgeon or healthcare provider.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.subheader("Disclaimer")
+        st.warning("This app provides general information only and is NOT medical advice. Always consult your surgeon or healthcare provider.")
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+    st.divider()
 
     # Action buttons
     col1, col2, col3, col4 = st.columns(4)
@@ -3373,24 +3324,14 @@ def show_about():
             st.rerun()
 
     # Share and feedback section
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-    st.markdown("#### 💝 Share & Support")
+    st.divider()
+    st.subheader("💝 Share & Support")
 
     share_col1, share_col2 = st.columns(2)
     with share_col1:
-        st.markdown("""
-        <div style="background: #FDF2F4; padding: 1rem; border-radius: 12px; text-align: center;">
-            <p style="margin: 0;"><strong>💌 Know someone recovering from surgery?</strong></p>
-            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">Share Recovery Buddy with them!</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.success("💌 **Know someone recovering from surgery?** Share Recovery Buddy with them!")
     with share_col2:
-        st.markdown("""
-        <div style="background: #E8F5E8; padding: 1rem; border-radius: 12px; text-align: center;">
-            <p style="margin: 0;"><strong>📝 Have feedback?</strong></p>
-            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">We'd love to hear from you!</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.info("📝 **Have feedback?** We'd love to hear from you!")
 
 
 def show_settings():
@@ -4357,33 +4298,16 @@ def show_welcome():
         </p>
         """, unsafe_allow_html=True)
 
-    # Action buttons
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+    # Main action button - Begin Check-In
+    st.divider()
 
-    btn_col1, btn_col2, btn_col3, btn_col4 = st.columns([1, 1, 1, 1])
-    with btn_col1:
-        if st.button("🩺 Begin Check-In", key="btn_begin", type="primary", use_container_width=True):
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🩺 Begin Daily Check-In", key="btn_begin", type="primary", use_container_width=True):
             st.session_state.step = 'get_info'
             st.rerun()
-    with btn_col2:
-        if st.button("📊 My Data", key="btn_progress", use_container_width=True):
-            st.session_state.step = 'dashboard'
-            st.rerun()
-    with btn_col3:
-        if st.button("ℹ️ About", key="btn_about", use_container_width=True):
-            st.session_state.step = 'about'
-            st.rerun()
-    with btn_col4:
-        if st.button("⚙️ Settings", key="btn_settings", use_container_width=True):
-            st.session_state.step = 'settings'
-            st.rerun()
 
-    st.markdown("""
-    <p style="text-align: center; color: #3A4A3A; font-size: 0.85rem; margin-top: 2rem;">
-        💚 Remember: I'm here to support you, not replace medical advice.<br>
-        Always follow your surgeon's instructions.
-    </p>
-    """, unsafe_allow_html=True)
+    st.caption("💚 Remember: I'm here to support you, not replace medical advice. Always follow your surgeon's instructions.")
 
 
 def show_get_info():
