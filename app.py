@@ -2650,20 +2650,10 @@ def render_progress_bar():
 
 
 def render_bottom_nav():
-    """Render mobile-style bottom navigation bar"""
+    """Render bottom navigation bar using native Streamlit components"""
     current_step = st.session_state.get('step', 'welcome')
 
-    # Define navigation items
-    nav_items = [
-        {"icon": "🏠", "label": "Home", "step": "welcome"},
-        {"icon": "📊", "label": "Progress", "step": "dashboard"},
-        {"icon": "✅", "label": "Check-in", "step": "get_info"},
-        {"icon": "😊", "label": "Mood", "step": "mood_tracker"},
-        {"icon": "⚙️", "label": "Settings", "step": "settings"},
-    ]
-
     # Map current step to nav item for highlighting
-    # Some steps share the same nav item
     step_to_nav = {
         "welcome": "welcome",
         "dashboard": "dashboard",
@@ -2685,69 +2675,41 @@ def render_bottom_nav():
 
     active_nav = step_to_nav.get(current_step, "welcome")
 
-    # Build the navigation HTML
-    nav_html = '<div class="bottom-nav">'
+    # Add divider before navigation
+    st.divider()
 
-    for item in nav_items:
-        is_active = "active" if item["step"] == active_nav else ""
-        nav_html += f'''
-        <div class="bottom-nav-item {is_active}" id="nav-{item['step']}">
-            <span class="bottom-nav-icon">{item['icon']}</span>
-            <span class="bottom-nav-label">{item['label']}</span>
-        </div>
-        '''
+    # Create bottom navigation with Streamlit columns
+    col1, col2, col3, col4, col5 = st.columns(5)
 
-    nav_html += '</div>'
+    with col1:
+        btn_type = "primary" if active_nav == "welcome" else "secondary"
+        if st.button("🏠 Home", key="nav_home", use_container_width=True, type=btn_type):
+            st.session_state.step = "welcome"
+            st.rerun()
 
-    st.markdown(nav_html, unsafe_allow_html=True)
+    with col2:
+        btn_type = "primary" if active_nav == "dashboard" else "secondary"
+        if st.button("📊 Progress", key="nav_progress", use_container_width=True, type=btn_type):
+            st.session_state.step = "dashboard"
+            st.rerun()
 
-    # Use Streamlit columns for actual navigation buttons (invisible but functional)
-    # This is a workaround since we can't use onclick in the HTML
-    st.markdown("""
-    <style>
-    .bottom-nav-buttons {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 70px;
-        z-index: 10000;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        background: transparent;
-    }
-    .bottom-nav-buttons .stButton {
-        flex: 1;
-        max-width: 20%;
-    }
-    .bottom-nav-buttons .stButton > button {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        width: 100%;
-        height: 60px;
-        color: transparent !important;
-        padding: 0 !important;
-    }
-    .bottom-nav-buttons .stButton > button:hover {
-        background: transparent !important;
-        border: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    with col3:
+        btn_type = "primary" if active_nav == "get_info" else "secondary"
+        if st.button("✅ Check-in", key="nav_checkin", use_container_width=True, type=btn_type):
+            st.session_state.step = "get_info"
+            st.rerun()
 
-    # Create invisible button overlay
-    with st.container():
-        st.markdown('<div class="bottom-nav-buttons">', unsafe_allow_html=True)
-        cols = st.columns(5)
-        for i, item in enumerate(nav_items):
-            with cols[i]:
-                if st.button(" ", key=f"bottom_nav_{item['step']}", help=item['label']):
-                    st.session_state.step = item['step']
-                    st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+    with col4:
+        btn_type = "primary" if active_nav == "mood_tracker" else "secondary"
+        if st.button("😊 Mood", key="nav_mood", use_container_width=True, type=btn_type):
+            st.session_state.step = "mood_tracker"
+            st.rerun()
+
+    with col5:
+        btn_type = "primary" if active_nav == "settings" else "secondary"
+        if st.button("⚙️ Settings", key="nav_settings", use_container_width=True, type=btn_type):
+            st.session_state.step = "settings"
+            st.rerun()
 
 
 def render_header():
