@@ -7,12 +7,178 @@ Built with Streamlit - Luxury Wellness Aesthetic
 import streamlit as st
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
+import random
 
 # App version
-APP_VERSION = "1.2.0"
+APP_VERSION = "2.0.0"
 APP_CREATOR = "Ashmita Sharma"
 LAST_MEDICAL_REVIEW = "January 2026"
+
+# ============================================
+# COZY MESSAGES AND AFFIRMATIONS
+# ============================================
+
+def get_time_greeting(name):
+    """Get time-based greeting"""
+    hour = datetime.now().hour
+    if 5 <= hour < 12:
+        return f"Good morning, {name}! How are you feeling today? ☀️"
+    elif 12 <= hour < 17:
+        return f"Good afternoon, {name}! Hope you're having a gentle day 🌸"
+    elif 17 <= hour < 21:
+        return f"Good evening, {name}! Time to rest and heal 🌙"
+    else:
+        return f"Hey {name}, remember to get good sleep tonight 💤"
+
+AFFIRMATIONS = [
+    "You're doing amazing 💚",
+    "Healing takes time, and that's okay",
+    "Be patient with yourself today",
+    "Your body is working hard to heal",
+    "One day at a time 🌱",
+    "You've got this!",
+    "Rest is productive",
+    "It's okay to take it slow",
+    "Small progress is still progress",
+    "Your only job right now is to heal",
+    "Be gentle with yourself",
+    "Healing is not linear",
+    "You deserve kindness today 💚",
+    "Every day is a step forward",
+    "Trust the process"
+]
+
+COMFORT_REMINDERS = [
+    "Have you had water today? 💧",
+    "Remember to take a deep breath 🌬️",
+    "It's okay to rest 🛋️",
+    "You deserve kindness today 💚",
+    "Take a moment to stretch gently",
+    "How about some calming music? 🎵",
+    "Remember: healing takes time"
+]
+
+HEALING_QUOTES = [
+    "\"Healing is not linear\" 🌱",
+    "\"Be gentle with yourself\"",
+    "\"Small progress is still progress\"",
+    "\"Your only job right now is to heal\"",
+    "\"Rest is not laziness, it's recovery\"",
+    "\"Every day you're getting stronger\"",
+    "\"Patience is part of healing\""
+]
+
+DAILY_TIPS = [
+    {"tip": "Stay hydrated! Aim for 8 glasses of water today 💧", "icon": "💧"},
+    {"tip": "Sleep elevated to reduce swelling 🛏️", "icon": "🛏️"},
+    {"tip": "Avoid salty foods - they increase swelling 🧂", "icon": "🧂"},
+    {"tip": "Take short walks if approved by your surgeon 🚶", "icon": "🚶"},
+    {"tip": "Ice the area as directed (20 min on, 20 min off) 🧊", "icon": "🧊"},
+    {"tip": "Wear your compression garments as instructed 👕", "icon": "👕"},
+    {"tip": "Avoid looking down at your phone too much 📱", "icon": "📱"},
+    {"tip": "Keep your follow-up appointments! 📅", "icon": "📅"},
+    {"tip": "Don't skip meals - your body needs fuel to heal 🍎", "icon": "🍎"},
+    {"tip": "Avoid alcohol - it can increase swelling and bruising 🍷", "icon": "🍷"},
+    {"tip": "No smoking! It significantly delays healing 🚭", "icon": "🚭"},
+    {"tip": "Take your medications on schedule ⏰", "icon": "⏰"},
+    {"tip": "Get plenty of protein for tissue repair 🥚", "icon": "🥚"},
+    {"tip": "Avoid strenuous activities until cleared 🏃", "icon": "🏃"},
+    {"tip": "Be patient with bruising - it can take weeks to fade 💜", "icon": "💜"}
+]
+
+# Recovery milestones by day
+RECOVERY_MILESTONES = {
+    1: {"title": "Day 1 - Rest Day", "message": "Focus on rest. Swelling is normal.", "icon": "🛏️"},
+    3: {"title": "Day 3 - Peak Swelling", "message": "Swelling peaks around day 2-3. This is normal!", "icon": "📈"},
+    7: {"title": "Week 1 Complete!", "message": "Major milestone! Stitches may be removed soon.", "icon": "🎉"},
+    14: {"title": "Two Weeks!", "message": "Swelling starts decreasing. Bruising fading.", "icon": "🌟"},
+    21: {"title": "Three Weeks!", "message": "Most bruising should be gone. Feeling more normal!", "icon": "✨"},
+    30: {"title": "One Month!", "message": "Major healing accomplished. Results emerging!", "icon": "🏆"},
+    60: {"title": "Two Months!", "message": "Swelling continues to improve. Almost there!", "icon": "🌸"},
+    90: {"title": "Three Months!", "message": "Final results starting to show!", "icon": "💫"}
+}
+
+# Mascot expressions based on recovery day
+def get_mascot_message(day):
+    """Get mascot message based on recovery day"""
+    if day <= 3:
+        return {"emoji": "🌸", "expression": "determined", "message": "Hang in there! The first few days are the hardest."}
+    elif day <= 7:
+        return {"emoji": "🌸", "expression": "encouraging", "message": "You're doing great! Keep resting!"}
+    elif day <= 14:
+        return {"emoji": "🌸", "expression": "happy", "message": "Look at you go! Over a week of healing!"}
+    elif day <= 30:
+        return {"emoji": "🌸", "expression": "proud", "message": "Amazing progress! You're a healing superstar!"}
+    else:
+        return {"emoji": "🌸", "expression": "celebrating", "message": "Look how far you've come! 🎉"}
+
+# Self-care checklist items
+SELF_CARE_CHECKLIST = [
+    {"id": "meds", "label": "Took medications", "icon": "💊"},
+    {"id": "water", "label": "Drank 8 glasses of water", "icon": "💧"},
+    {"id": "food", "label": "Ate nutritious food", "icon": "🥗"},
+    {"id": "rest", "label": "Rested enough", "icon": "😴"},
+    {"id": "movement", "label": "Did gentle movement (if approved)", "icon": "🚶"},
+    {"id": "breathing", "label": "Practiced deep breathing", "icon": "🌬️"},
+    {"id": "support", "label": "Reached out to someone supportive", "icon": "💚"}
+]
+
+# Mood options with emojis
+MOOD_OPTIONS = [
+    {"emoji": "😢", "label": "Struggling", "color": "#FFB4B4", "response": "I'm sorry you're having a hard time. Remember, it's okay to not be okay. Healing is tough. 💚"},
+    {"emoji": "😐", "label": "Okay", "color": "#FFE4B4", "response": "Okay days are perfectly normal during recovery. You're doing great just by getting through it!"},
+    {"emoji": "🙂", "label": "Good", "color": "#C4E8C4", "response": "That's wonderful to hear! Keep up the positive energy! 🌸"},
+    {"emoji": "😊", "label": "Great", "color": "#A8D8A8", "response": "So happy for you! What a great recovery day! 🎉"}
+]
+
+# Symptom checker data
+SYMPTOM_CHECKER = {
+    "normal": {
+        "symptoms": [
+            "Mild to moderate swelling",
+            "Bruising (yellow, purple, green)",
+            "Mild discomfort or tightness",
+            "Numbness or tingling",
+            "Itching around incisions",
+            "Fatigue or tiredness",
+            "Mild headache",
+            "Constipation (from pain meds)",
+            "Dry skin around incision"
+        ],
+        "message": "These symptoms are typically normal during recovery. Continue following your surgeon's instructions.",
+        "action": "Monitor and continue care",
+        "color": "#E8F5E8"
+    },
+    "call_soon": {
+        "symptoms": [
+            "Increasing pain not relieved by medication",
+            "Swelling that seems to be getting worse after day 3",
+            "Persistent nausea or vomiting",
+            "Drainage that changes color or smells bad",
+            "Redness spreading from incision",
+            "Low-grade fever (99-100.4°F)"
+        ],
+        "message": "These symptoms may need attention. Call your surgeon's office during business hours.",
+        "action": "Call surgeon within 24 hours",
+        "color": "#FFF8E7"
+    },
+    "urgent": {
+        "symptoms": [
+            "High fever (over 101°F)",
+            "Sudden severe pain",
+            "Heavy bleeding that won't stop",
+            "Signs of infection (hot, red, swollen)",
+            "Difficulty breathing",
+            "Chest pain",
+            "Severe dizziness or fainting",
+            "Calf pain or swelling (possible blood clot)"
+        ],
+        "message": "These symptoms require immediate attention!",
+        "action": "Call surgeon immediately or go to ER",
+        "color": "#FFE5E5"
+    }
+}
 
 # Medical Sources for Citations
 MEDICAL_SOURCES = {
@@ -42,6 +208,108 @@ MEDICAL_SOURCES = {
         "abbrev": "RealSelf"
     }
 }
+
+# Surgery Resources by procedure
+SURGERY_RESOURCES = {
+    "rhinoplasty": {
+        "name": "Rhinoplasty (Nose Surgery)",
+        "links": [
+            {"source": "Mayo Clinic", "url": "https://www.mayoclinic.org/tests-procedures/rhinoplasty/about/pac-20384532"},
+            {"source": "ASPS", "url": "https://www.plasticsurgery.org/cosmetic-procedures/rhinoplasty"},
+            {"source": "Cleveland Clinic", "url": "https://my.clevelandclinic.org/health/treatments/11023-rhinoplasty-nose-surgery"}
+        ],
+        "recovery_time": "1-2 weeks for initial recovery, 6-12 months for final results",
+        "common_symptoms": "Swelling, bruising around eyes, nasal congestion, mild discomfort"
+    },
+    "facelift": {
+        "name": "Facelift",
+        "links": [
+            {"source": "Mayo Clinic", "url": "https://www.mayoclinic.org/tests-procedures/face-lift/about/pac-20394059"},
+            {"source": "ASPS", "url": "https://www.plasticsurgery.org/cosmetic-procedures/facelift"}
+        ],
+        "recovery_time": "2-4 weeks, with final results at 2-3 months",
+        "common_symptoms": "Swelling, bruising, tightness, numbness"
+    },
+    "breast_augmentation": {
+        "name": "Breast Augmentation",
+        "links": [
+            {"source": "Mayo Clinic", "url": "https://www.mayoclinic.org/tests-procedures/breast-augmentation/about/pac-20393178"},
+            {"source": "ASPS", "url": "https://www.plasticsurgery.org/cosmetic-procedures/breast-augmentation"}
+        ],
+        "recovery_time": "1-2 weeks, avoid strenuous activity for 4-6 weeks",
+        "common_symptoms": "Swelling, soreness, tightness, sensitivity changes"
+    },
+    "bbl": {
+        "name": "BBL (Brazilian Butt Lift)",
+        "links": [
+            {"source": "ASPS", "url": "https://www.plasticsurgery.org/cosmetic-procedures/buttock-enhancement/brazilian-butt-lift"}
+        ],
+        "recovery_time": "2-3 weeks, avoid sitting directly for 2-6 weeks",
+        "common_symptoms": "Swelling, bruising, discomfort when sitting"
+    },
+    "tummy_tuck": {
+        "name": "Tummy Tuck (Abdominoplasty)",
+        "links": [
+            {"source": "Mayo Clinic", "url": "https://www.mayoclinic.org/tests-procedures/tummy-tuck/about/pac-20384892"},
+            {"source": "ASPS", "url": "https://www.plasticsurgery.org/cosmetic-procedures/tummy-tuck"}
+        ],
+        "recovery_time": "2-4 weeks, full recovery 3-6 months",
+        "common_symptoms": "Swelling, bruising, tightness, drain tubes initially"
+    },
+    "liposuction": {
+        "name": "Liposuction",
+        "links": [
+            {"source": "Mayo Clinic", "url": "https://www.mayoclinic.org/tests-procedures/liposuction/about/pac-20384586"},
+            {"source": "ASPS", "url": "https://www.plasticsurgery.org/cosmetic-procedures/liposuction"}
+        ],
+        "recovery_time": "1-2 weeks, compression garments for several weeks",
+        "common_symptoms": "Swelling, bruising, fluid drainage, numbness"
+    }
+}
+
+# FAQ data
+FAQ_DATA = [
+    {
+        "question": "When can I shower after surgery?",
+        "answer": "This varies by procedure. Most surgeons allow showering 24-48 hours after surgery, but you may need to keep incisions dry or covered. Always follow your surgeon's specific instructions.",
+        "source": "ASPS"
+    },
+    {
+        "question": "When can I exercise after surgery?",
+        "answer": "Light walking is usually encouraged within days of surgery. Most surgeons recommend waiting 4-6 weeks before any strenuous exercise. Always get clearance from your surgeon first.",
+        "source": "Mayo Clinic"
+    },
+    {
+        "question": "Is bruising normal?",
+        "answer": "Yes! Bruising is very common and typically peaks around day 2-3 and then gradually fades over 1-3 weeks. Colors may change from purple to green to yellow as it heals.",
+        "source": "Cleveland Clinic"
+    },
+    {
+        "question": "When will swelling go down?",
+        "answer": "Swelling peaks around day 2-3, then gradually decreases. Most swelling resolves within 2-4 weeks, but subtle swelling can persist for months. Final results may take 6-12 months.",
+        "source": "ASPS"
+    },
+    {
+        "question": "When can I wear makeup?",
+        "answer": "For facial procedures, most surgeons recommend waiting until incisions are fully healed (usually 10-14 days) before applying makeup near surgical areas.",
+        "source": "RealSelf"
+    },
+    {
+        "question": "Is it normal to feel emotional after surgery?",
+        "answer": "Absolutely! Post-surgical blues are very common due to anesthesia, pain medications, limited mobility, and the body's healing response. These feelings usually improve within 1-2 weeks.",
+        "source": "Cleveland Clinic"
+    },
+    {
+        "question": "When should I call my surgeon?",
+        "answer": "Call if you have: fever over 101°F, sudden increase in pain, heavy bleeding, signs of infection (redness, warmth, discharge), difficulty breathing, or anything that concerns you.",
+        "source": "Mayo Clinic"
+    },
+    {
+        "question": "Can I sleep on my side?",
+        "answer": "This depends on your procedure. For facial surgery, sleep elevated on your back. For breast surgery, sleep on your back. For body procedures, follow your surgeon's guidance. Most restrictions last 2-4 weeks.",
+        "source": "ASPS"
+    }
+]
 
 def get_citation_html(source_keys, inline=True):
     """Generate citation HTML for given source keys"""
@@ -648,22 +916,24 @@ st.markdown("""
         border: 2px solid #A8C5A8 !important;
     }
 
-    /* Logo Header */
+    /* Logo Header - Fixed cutoff issues */
     .logo-header {
         text-align: center;
-        padding: 2rem 1rem 1rem 1rem;
-        margin-bottom: 1rem;
+        padding: 2rem 1rem 2rem 1rem;
+        margin-bottom: 1.5rem;
+        overflow: visible;
     }
 
     .logo-header svg {
         max-width: 100%;
         height: auto;
+        overflow: visible;
     }
 
     /* Mobile responsive logo */
     @media (max-width: 600px) {
         .logo-header {
-            padding: 1.5rem 0.5rem 0.5rem 0.5rem;
+            padding: 1.5rem 0.5rem 1.5rem 0.5rem;
         }
         .logo-header svg {
             width: 100%;
@@ -684,6 +954,7 @@ st.markdown("""
         color: var(--text-dark);
         margin: 0;
         letter-spacing: -0.5px;
+        padding-bottom: 0.25rem;
     }
 
     .logo-subtitle {
@@ -691,7 +962,26 @@ st.markdown("""
         font-size: 1rem;
         color: var(--text-light);
         margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
         font-weight: 400;
+    }
+
+    /* ===== FIX TEXT CUTOFF GLOBALLY ===== */
+    /* Add padding-bottom to all containers */
+    .wellness-card, .tip-card, .info-box, .success-box, .warning-box,
+    .danger-box, .stat-card, .source-card, .legal-page, .disclaimer-modal {
+        padding-bottom: 1.5rem !important;
+        overflow: visible !important;
+    }
+
+    /* Ensure all text has bottom margin */
+    p, h1, h2, h3, h4, h5, h6, li {
+        margin-bottom: 0.5rem;
+    }
+
+    /* SVG text should not be clipped */
+    svg text {
+        overflow: visible;
     }
 
     /* Progress Steps */
@@ -1205,6 +1495,65 @@ st.markdown("""
         0%, 20% { content: '.'; }
         40% { content: '..'; }
         60%, 100% { content: '...'; }
+    }
+
+    /* ===== SOFT ANIMATIONS FOR COZY FEEL ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes gentlePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+
+    @keyframes softGlow {
+        0%, 100% { box-shadow: 0 2px 15px rgba(168, 197, 168, 0.2); }
+        50% { box-shadow: 0 2px 25px rgba(168, 197, 168, 0.4); }
+    }
+
+    @keyframes floatEmoji {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    /* Apply animations to elements */
+    .wellness-card, .tip-card, .info-box {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .welcome-back-card {
+        animation: fadeInUp 0.6s ease-out, softGlow 3s ease-in-out infinite;
+    }
+
+    .emoji-large {
+        animation: floatEmoji 3s ease-in-out infinite;
+    }
+
+    .affirmation {
+        animation: fadeInUp 0.7s ease-out;
+    }
+
+    /* Hover effects for interactive elements */
+    .wellness-card:hover, .tip-card:hover {
+        transform: translateY(-2px);
+        transition: transform 0.3s ease;
+    }
+
+    .stButton > button {
+        transition: all 0.3s ease;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .loading-icon {
@@ -2948,6 +3297,344 @@ def show_settings():
             st.rerun()
 
 
+def show_surgery_resources():
+    """Surgery Resources page with links to official sources"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>📚 Surgery Resources</h3>
+        <p style="color: #333;">Find official information about your procedure from trusted medical sources.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="info-box">
+        <p>📋 These links go to official medical websites with detailed information about each procedure,
+        recovery timelines, and what to expect. Always consult your surgeon for personalized advice.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    for proc_key, proc_info in SURGERY_RESOURCES.items():
+        with st.expander(f"📖 {proc_info['name']}", expanded=False):
+            st.markdown(f"**Recovery Time:** {proc_info['recovery_time']}")
+            st.markdown(f"**Common Symptoms:** {proc_info['common_symptoms']}")
+            st.markdown("**Official Resources:**")
+            for link in proc_info['links']:
+                st.markdown(f"- [{link['source']}]({link['url']})")
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    if st.button("🏠 Back to Home", key="resources_home", use_container_width=True):
+        st.session_state.step = 'welcome'
+        st.rerun()
+
+
+def show_faq():
+    """FAQ page with common questions"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>❓ Frequently Asked Questions</h3>
+        <p style="color: #333;">Common questions about post-surgery recovery.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Search box
+    search_query = st.text_input("🔍 Search questions", placeholder="Type to search...", key="faq_search")
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    for faq in FAQ_DATA:
+        # Filter by search
+        if search_query and search_query.lower() not in faq['question'].lower() and search_query.lower() not in faq['answer'].lower():
+            continue
+
+        with st.expander(f"❓ {faq['question']}", expanded=False):
+            st.markdown(faq['answer'])
+            st.markdown(f"*Source: {faq['source']}*")
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    if st.button("🏠 Back to Home", key="faq_home", use_container_width=True):
+        st.session_state.step = 'welcome'
+        st.rerun()
+
+
+def show_symptom_checker_page():
+    """Symptom checker - Is this normal?"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>🩺 Symptom Checker</h3>
+        <p style="color: #333;">Not sure if what you're experiencing is normal? Check here.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="warning-box">
+        <p>⚠️ <strong>Disclaimer:</strong> This is for informational purposes only and is NOT medical advice.
+        When in doubt, always call your surgeon's office.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### Select any symptoms you're experiencing:")
+
+    # Create columns for symptom checkboxes
+    selected_symptoms = []
+
+    st.markdown("#### 🟢 Typically Normal Symptoms")
+    for symptom in SYMPTOM_CHECKER['normal']['symptoms']:
+        if st.checkbox(symptom, key=f"sym_normal_{symptom}"):
+            selected_symptoms.append(('normal', symptom))
+
+    st.markdown("#### 🟡 May Need Attention")
+    for symptom in SYMPTOM_CHECKER['call_soon']['symptoms']:
+        if st.checkbox(symptom, key=f"sym_soon_{symptom}"):
+            selected_symptoms.append(('call_soon', symptom))
+
+    st.markdown("#### 🔴 Urgent - Seek Immediate Care")
+    for symptom in SYMPTOM_CHECKER['urgent']['symptoms']:
+        if st.checkbox(symptom, key=f"sym_urgent_{symptom}"):
+            selected_symptoms.append(('urgent', symptom))
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    if selected_symptoms:
+        # Determine highest severity
+        severities = [s[0] for s in selected_symptoms]
+        if 'urgent' in severities:
+            level = 'urgent'
+            st.markdown(f"""
+            <div style="background: {SYMPTOM_CHECKER['urgent']['color']}; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #E74C3C;">
+                <h4 style="color: #C0392B; margin: 0 0 0.5rem 0;">🚨 {SYMPTOM_CHECKER['urgent']['action']}</h4>
+                <p style="color: #333; margin: 0;">{SYMPTOM_CHECKER['urgent']['message']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        elif 'call_soon' in severities:
+            level = 'call_soon'
+            st.markdown(f"""
+            <div style="background: {SYMPTOM_CHECKER['call_soon']['color']}; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #F5C842;">
+                <h4 style="color: #856404; margin: 0 0 0.5rem 0;">📞 {SYMPTOM_CHECKER['call_soon']['action']}</h4>
+                <p style="color: #333; margin: 0;">{SYMPTOM_CHECKER['call_soon']['message']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            level = 'normal'
+            st.markdown(f"""
+            <div style="background: {SYMPTOM_CHECKER['normal']['color']}; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #28A745;">
+                <h4 style="color: #155724; margin: 0 0 0.5rem 0;">✅ {SYMPTOM_CHECKER['normal']['action']}</h4>
+                <p style="color: #333; margin: 0;">{SYMPTOM_CHECKER['normal']['message']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <p style="font-size: 0.85rem; color: #666; margin-top: 1rem; text-align: center;">
+            <em>Source: American Society of Plastic Surgeons (ASPS), Mayo Clinic, Cleveland Clinic</em>
+        </p>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🏠 Back to Home", key="symptom_home", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
+    with col2:
+        if st.button("📞 Emergency Contacts", key="symptom_emergency", use_container_width=True):
+            st.session_state.step = 'emergency_contacts'
+            st.rerun()
+
+
+def show_emergency_contacts():
+    """Emergency contacts page"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>📞 Emergency Contacts</h3>
+        <p style="color: #333;">Keep your important contacts handy.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Emergency banner
+    st.markdown("""
+    <div style="background: #FFE5E5; border: 2px solid #E74C3C; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
+        <p style="color: #C0392B; font-weight: 700; font-size: 1.2rem; margin: 0;">
+            🚨 Medical Emergency? Call 911
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Surgeon info
+    st.markdown("### 👨‍⚕️ Your Surgeon")
+    surgeon_name = st.text_input("Surgeon's Name", value=st.session_state.emergency_contacts.get('surgeon_name', ''), key="surgeon_name_input")
+    surgeon_phone = st.text_input("Surgeon's Phone", value=st.session_state.emergency_contacts.get('surgeon_phone', ''), key="surgeon_phone_input")
+
+    st.markdown("### 👥 Emergency Contact")
+    emergency_name = st.text_input("Contact Name", value=st.session_state.emergency_contacts.get('emergency_name', ''), key="emergency_name_input")
+    emergency_phone = st.text_input("Contact Phone", value=st.session_state.emergency_contacts.get('emergency_phone', ''), key="emergency_phone_input")
+
+    if st.button("💾 Save Contacts", key="save_contacts", type="primary"):
+        st.session_state.emergency_contacts = {
+            'surgeon_name': surgeon_name,
+            'surgeon_phone': surgeon_phone,
+            'emergency_name': emergency_name,
+            'emergency_phone': emergency_phone
+        }
+        st.session_state.progress_data['emergency_contacts'] = st.session_state.emergency_contacts
+        save_progress(st.session_state.progress_data)
+        st.success("✅ Contacts saved!")
+
+    # Quick dial buttons if contacts exist
+    if surgeon_phone:
+        st.markdown("### 📱 Quick Dial")
+        st.markdown(f"""
+        <a href="tel:{surgeon_phone}" style="display: inline-block; background: #A8C5A8; color: white;
+           padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; margin-right: 1rem;">
+            📞 Call Surgeon
+        </a>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    if st.button("🏠 Back to Home", key="emergency_home", use_container_width=True):
+        st.session_state.step = 'welcome'
+        st.rerun()
+
+
+def show_self_care():
+    """Daily self-care checklist"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>💚 Daily Self-Care Checklist</h3>
+        <p style="color: #333;">Take care of yourself today! Check off what you've done.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Get today's date
+    today = datetime.now().strftime('%Y-%m-%d')
+
+    # Show affirmation
+    affirmation = AFFIRMATIONS[st.session_state.affirmation_index]
+    st.markdown(f"""
+    <div class="info-box" style="text-align: center;">
+        <p style="font-size: 1.1rem; font-style: italic;">✨ {affirmation}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Checklist
+    completed_count = 0
+    for item in SELF_CARE_CHECKLIST:
+        checked = st.checkbox(
+            f"{item['icon']} {item['label']}",
+            value=st.session_state.self_care_today.get(item['id'], False),
+            key=f"selfcare_{item['id']}"
+        )
+        st.session_state.self_care_today[item['id']] = checked
+        if checked:
+            completed_count += 1
+
+    # Save progress
+    st.session_state.progress_data['self_care_today'] = st.session_state.self_care_today
+    st.session_state.progress_data['self_care_date'] = today
+    save_progress(st.session_state.progress_data)
+
+    # Progress indicator
+    total_items = len(SELF_CARE_CHECKLIST)
+    progress_pct = (completed_count / total_items) * 100
+
+    st.markdown(f"""
+    <div style="background: #E8F5E8; padding: 1rem; border-radius: 12px; margin-top: 1rem; text-align: center;">
+        <p style="margin: 0; color: #2C5530; font-weight: 600;">
+            {completed_count}/{total_items} completed today ({progress_pct:.0f}%)
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Celebration if all complete
+    if completed_count == total_items:
+        st.balloons()
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #A8C5A8 0%, #C8D8C8 100%); padding: 1.5rem; border-radius: 12px; text-align: center; margin-top: 1rem;">
+            <p style="font-size: 1.5rem; margin: 0;">🎉 Amazing! You completed all your self-care tasks! 🎉</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    if st.button("🏠 Back to Home", key="selfcare_home", use_container_width=True):
+        st.session_state.step = 'welcome'
+        st.rerun()
+
+
+def show_mood_tracker():
+    """Mood tracker page"""
+    render_header()
+
+    st.markdown("""
+    <div class="wellness-card">
+        <h3>😊 How Are You Feeling?</h3>
+        <p style="color: #333;">Track your emotional wellbeing during recovery.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### Select your mood today:")
+
+    cols = st.columns(4)
+    selected_mood = None
+
+    for i, mood in enumerate(MOOD_OPTIONS):
+        with cols[i]:
+            if st.button(
+                f"{mood['emoji']}\n{mood['label']}",
+                key=f"mood_{mood['label']}",
+                use_container_width=True
+            ):
+                selected_mood = mood
+
+    if selected_mood:
+        # Save mood
+        mood_entry = {
+            'date': datetime.now().strftime('%Y-%m-%d'),
+            'time': datetime.now().strftime('%H:%M'),
+            'mood': selected_mood['label'],
+            'emoji': selected_mood['emoji']
+        }
+        st.session_state.mood_history.append(mood_entry)
+        st.session_state.progress_data['mood_history'] = st.session_state.mood_history
+        save_progress(st.session_state.progress_data)
+
+        # Show response
+        st.markdown(f"""
+        <div style="background: {selected_mood['color']}; padding: 1.5rem; border-radius: 12px; margin-top: 1rem; text-align: center;">
+            <p style="font-size: 2rem; margin: 0 0 0.5rem 0;">{selected_mood['emoji']}</p>
+            <p style="color: #333; margin: 0;">{selected_mood['response']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Show mood history
+    if st.session_state.mood_history:
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+        st.markdown("### Recent Mood History")
+
+        for entry in reversed(st.session_state.mood_history[-7:]):
+            st.markdown(f"{entry['emoji']} **{entry['date']}** - {entry['mood']}")
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    if st.button("🏠 Back to Home", key="mood_home", use_container_width=True):
+        st.session_state.step = 'welcome'
+        st.rerun()
+
+
 def main():
     # Show loading screen on first load
     if 'app_loaded' not in st.session_state:
@@ -2967,7 +3654,8 @@ def main():
     if 'progress_data' not in st.session_state:
         st.session_state.progress_data = load_progress()
     if 'dark_mode' not in st.session_state:
-        st.session_state.dark_mode = False
+        # Load dark mode preference from saved data
+        st.session_state.dark_mode = st.session_state.progress_data.get('dark_mode', False)
     if 'checklist' not in st.session_state:
         st.session_state.checklist = {}
     if 'journal_entries' not in st.session_state:
@@ -2991,6 +3679,27 @@ def main():
         st.session_state.last_check_in = st.session_state.progress_data.get('last_check_in')
     if 'streak' not in st.session_state:
         st.session_state.streak = st.session_state.progress_data.get('streak', 0)
+
+    # New feature session state
+    if 'mood_history' not in st.session_state:
+        st.session_state.mood_history = st.session_state.progress_data.get('mood_history', [])
+    if 'self_care_today' not in st.session_state:
+        # Reset daily if it's a new day
+        today = datetime.now().strftime('%Y-%m-%d')
+        saved_date = st.session_state.progress_data.get('self_care_date', '')
+        if saved_date != today:
+            st.session_state.self_care_today = {}
+        else:
+            st.session_state.self_care_today = st.session_state.progress_data.get('self_care_today', {})
+    if 'medications' not in st.session_state:
+        st.session_state.medications = st.session_state.progress_data.get('medications', [])
+    if 'emergency_contacts' not in st.session_state:
+        st.session_state.emergency_contacts = st.session_state.progress_data.get('emergency_contacts', {})
+    if 'daily_tip_index' not in st.session_state:
+        # Use day of year for consistent daily tips
+        st.session_state.daily_tip_index = datetime.now().timetuple().tm_yday % len(DAILY_TIPS)
+    if 'affirmation_index' not in st.session_state:
+        st.session_state.affirmation_index = random.randint(0, len(AFFIRMATIONS) - 1)
 
     # Show disclaimer popup on first visit
     if not st.session_state.disclaimer_accepted:
@@ -3029,34 +3738,122 @@ def main():
                 st.rerun()
         return  # Don't show rest of app until disclaimer accepted
 
+    # Save dark mode preference
+    if 'dark_mode' in st.session_state:
+        st.session_state.progress_data['dark_mode'] = st.session_state.dark_mode
+        save_progress(st.session_state.progress_data)
+
     # Apply dark mode if enabled
     if st.session_state.dark_mode:
         st.markdown("""
         <style>
+        /* ===== COMPREHENSIVE DARK MODE ===== */
+
+        /* Main app background */
         .stApp {
-            background: linear-gradient(180deg, #1a2420 0%, #2d3a35 100%) !important;
+            background: #121212 !important;
         }
-        .wellness-card, .tip-card, .info-box, .success-box, .warning-box, .danger-box {
-            background: #2d3a35 !important;
-            color: #E8F0E8 !important;
+
+        .main .block-container {
+            background: #121212 !important;
         }
+
+        /* All cards and containers */
+        .wellness-card, .tip-card, .info-box, .success-box, .warning-box, .danger-box,
+        .stat-card, .source-card, .legal-page, .disclaimer-modal {
+            background: #1E1E1E !important;
+            border-color: #333333 !important;
+        }
+
+        /* Headers - light text */
+        h1, h2, h3, h4, h5, h6,
         .wellness-card h2, .wellness-card h3, .wellness-card h4,
         .tip-card h2, .tip-card h3, .tip-card h4,
-        h1, h2, h3, h4, h5, h6 {
-            color: #E8F0E8 !important;
+        .stat-card .stat-value, .source-card h3, .legal-page h1, .legal-page h2 {
+            color: #FFFFFF !important;
         }
+
+        /* Body text - slightly dimmed white */
+        p, li, span, label, td, th,
         .wellness-card p, .tip-card p, .info-box p,
-        p, li, span, label {
-            color: #C8D8C8 !important;
+        .stat-card .stat-label, .source-card p, .legal-page p, .legal-page li,
+        [data-testid="stMarkdownContainer"] p,
+        [data-testid="stMarkdownContainer"] li {
+            color: #E0E0E0 !important;
         }
+
+        /* Logo */
         .logo-title {
             color: #A8C5A8 !important;
         }
         .logo-subtitle {
             color: #8AA88A !important;
         }
+
+        /* Progress container */
         .progress-container {
-            background: #2d3a35 !important;
+            background: #1E1E1E !important;
+        }
+
+        /* Input fields */
+        .stTextInput input, .stTextArea textarea, .stSelectbox > div > div,
+        .stNumberInput input {
+            background: #2D2D2D !important;
+            color: #FFFFFF !important;
+            border-color: #444444 !important;
+        }
+
+        /* Sidebar */
+        section[data-testid="stSidebar"] {
+            background: #1A1A1A !important;
+        }
+        section[data-testid="stSidebar"] h1,
+        section[data-testid="stSidebar"] h2,
+        section[data-testid="stSidebar"] h3,
+        section[data-testid="stSidebar"] p,
+        section[data-testid="stSidebar"] label {
+            color: #E0E0E0 !important;
+        }
+
+        /* Expanders */
+        [data-testid="stExpander"] {
+            background: #1E1E1E !important;
+            border-color: #333333 !important;
+        }
+        [data-testid="stExpander"] > details > summary {
+            background: #1E1E1E !important;
+            color: #E0E0E0 !important;
+        }
+        [data-testid="stExpander"] > details > div {
+            background: #252525 !important;
+        }
+
+        /* Buttons - keep accent colors */
+        .stButton > button {
+            background: linear-gradient(135deg, #4A6B4A 0%, #3A5A3A 100%) !important;
+            color: white !important;
+        }
+
+        /* Links */
+        a {
+            color: #7CB7FF !important;
+        }
+
+        /* Privacy badge */
+        .privacy-badge {
+            background: #2D3A2D !important;
+            border-color: #4A6B4A !important;
+            color: #A8C5A8 !important;
+        }
+
+        /* Dividers */
+        hr, .section-divider {
+            background: #333333 !important;
+        }
+
+        /* Checkbox and toggle text */
+        .stCheckbox label, .stToggle label {
+            color: #E0E0E0 !important;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -3064,8 +3861,29 @@ def main():
     # Sidebar with dark mode and emergency info
     with st.sidebar:
         st.markdown("### 📊 Navigation")
+        if st.button("🏠 Home", key="sidebar_home", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
         if st.button("📊 My Data", key="sidebar_my_data", use_container_width=True):
             st.session_state.step = 'dashboard'
+            st.rerun()
+        if st.button("😊 Mood Tracker", key="sidebar_mood", use_container_width=True):
+            st.session_state.step = 'mood_tracker'
+            st.rerun()
+        if st.button("✅ Self-Care", key="sidebar_selfcare", use_container_width=True):
+            st.session_state.step = 'self_care'
+            st.rerun()
+        if st.button("🩺 Symptom Checker", key="sidebar_symptoms", use_container_width=True):
+            st.session_state.step = 'symptom_checker'
+            st.rerun()
+        if st.button("📞 Emergency Contacts", key="sidebar_contacts", use_container_width=True):
+            st.session_state.step = 'emergency_contacts'
+            st.rerun()
+        if st.button("📚 Surgery Resources", key="sidebar_resources", use_container_width=True):
+            st.session_state.step = 'surgery_resources'
+            st.rerun()
+        if st.button("❓ FAQ", key="sidebar_faq", use_container_width=True):
+            st.session_state.step = 'faq'
             st.rerun()
 
         st.markdown("---")
@@ -3202,6 +4020,18 @@ def main():
         show_about()
     elif st.session_state.step == 'settings':
         show_settings()
+    elif st.session_state.step == 'surgery_resources':
+        show_surgery_resources()
+    elif st.session_state.step == 'faq':
+        show_faq()
+    elif st.session_state.step == 'symptom_checker':
+        show_symptom_checker_page()
+    elif st.session_state.step == 'emergency_contacts':
+        show_emergency_contacts()
+    elif st.session_state.step == 'self_care':
+        show_self_care()
+    elif st.session_state.step == 'mood_tracker':
+        show_mood_tracker()
 
 
 def show_welcome():
@@ -3212,17 +4042,46 @@ def show_welcome():
     saved_procedure = st.session_state.progress_data.get('procedure', '')
     is_returning = bool(saved_name)
 
+    # Calculate recovery day if surgery date is set
+    recovery_day = 0
+    surgery_date = st.session_state.progress_data.get('surgery_date')
+    if surgery_date:
+        try:
+            surgery_dt = datetime.strptime(surgery_date, '%Y-%m-%d')
+            recovery_day = (datetime.now() - surgery_dt).days + 1
+        except:
+            recovery_day = 0
+
     # Wide layout with two columns
     if is_returning:
-        # Welcome back message for returning users
+        # Time-based greeting for returning users
+        greeting = get_time_greeting(saved_name)
+        mascot = get_mascot_message(recovery_day) if recovery_day > 0 else {"emoji": "🌸", "message": "Welcome back to your recovery journey!"}
+
         st.markdown(f"""
-        <div class="welcome-back-card">
-            <h3 style="color: #5A7A5A; margin: 0;">👋 Welcome back, {saved_name}!</h3>
-            <p style="color: #3D4D3D; margin: 0.5rem 0 0 0;">
-                Ready to continue your recovery journey? Your progress is saved locally on this device.
-            </p>
+        <div class="welcome-back-card" style="background: linear-gradient(135deg, #F8FDF8 0%, #E8F5E8 100%); border: 2px solid #A8C5A8; border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
+            <h3 style="color: #5A7A5A; margin: 0; font-size: 1.3rem;">{greeting}</h3>
+            <div style="display: flex; align-items: center; margin-top: 0.75rem;">
+                <span style="font-size: 2rem; margin-right: 0.75rem;">{mascot['emoji']}</span>
+                <p style="color: #3D4D3D; margin: 0; font-style: italic;">"{mascot['message']}"</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
+
+        # Show recovery milestone if applicable
+        if recovery_day > 0:
+            # Find the most recent milestone
+            milestone_days = sorted([d for d in RECOVERY_MILESTONES.keys() if d <= recovery_day], reverse=True)
+            if milestone_days:
+                milestone = RECOVERY_MILESTONES[milestone_days[0]]
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, #FFF8F0 0%, #FFEFD5 100%); border: 1px solid #FFD700; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                    <p style="margin: 0; color: #B8860B;">
+                        {milestone['icon']} <strong>{milestone['title']}</strong> — Day {recovery_day} of Recovery
+                    </p>
+                    <p style="margin: 0.5rem 0 0 0; color: #8B7355; font-size: 0.9rem;">{milestone['message']}</p>
+                </div>
+                """, unsafe_allow_html=True)
 
         # Show last check-in info if available
         last_check = st.session_state.progress_data.get('last_check_in')
@@ -3255,6 +4114,19 @@ def show_welcome():
         """, unsafe_allow_html=True)
 
     with col_right:
+        # Daily Tip of the Day
+        daily_tip = DAILY_TIPS[st.session_state.daily_tip_index]
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #FFF9F0 0%, #FFE8D6 100%); border: 1px solid #DEB887; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+            <p style="margin: 0; color: #8B4513; font-weight: 600;">
+                {daily_tip['icon']} Tip of the Day
+            </p>
+            <p style="margin: 0.5rem 0 0 0; color: #654321; font-size: 0.95rem;">
+                {daily_tip['tip']}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
         st.markdown("""
         <div class="info-box">
             <p>✨ <strong>What we'll do together:</strong></p>
