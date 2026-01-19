@@ -3930,33 +3930,22 @@ def main():
 
     # Show disclaimer popup on first visit
     if not st.session_state.disclaimer_accepted:
-        st.markdown("""
-        <div class="disclaimer-modal">
-            <h2>⚠️ Important Medical Disclaimer</h2>
+        st.header("⚠️ Important Medical Disclaimer")
 
-            <div class="disclaimer-highlight">
-                <p>🏥 This app provides <strong>general recovery information only</strong> and is NOT medical advice.</p>
-            </div>
+        st.warning("🏥 This app provides **general recovery information only** and is NOT medical advice.")
 
-            <p><strong>Recovery Buddy does NOT:</strong></p>
-            <ul>
-                <li>Provide medical diagnosis or treatment recommendations</li>
-                <li>Replace professional medical advice from your surgeon</li>
-                <li>Serve as an emergency medical resource</li>
-            </ul>
+        st.write("**Recovery Buddy does NOT:**")
+        st.write("• Provide medical diagnosis or treatment recommendations")
+        st.write("• Replace professional medical advice from your surgeon")
+        st.write("• Serve as an emergency medical resource")
 
-            <p><strong>Always consult your surgeon or healthcare provider</strong> for personalized medical guidance about your recovery.</p>
+        st.write("**Always consult your surgeon or healthcare provider** for personalized medical guidance about your recovery.")
 
-            <div style="background: #FFF0F0; border: 1px solid #E74C3C; border-radius: 8px; padding: 1rem; margin: 1rem 0; text-align: center;">
-                <p style="color: #C0392B; font-weight: 600; margin: 0;">🚨 If you are experiencing a medical emergency, call 911 or go to the nearest emergency room immediately.</p>
-            </div>
+        st.error("🚨 **MEDICAL EMERGENCY?** Call 911 or go to the nearest emergency room immediately.")
 
-            <p style="font-size: 0.85rem; color: #666666; text-align: center; margin-top: 1rem;">
-                <em>Information compiled from board-certified medical sources including the American Society of Plastic Surgeons,
-                Mayo Clinic, Cleveland Clinic, WebMD, and RealSelf.</em>
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.caption("*Information compiled from board-certified medical sources including the American Society of Plastic Surgeons, Mayo Clinic, Cleveland Clinic, WebMD, and RealSelf.*")
+
+        st.divider()
 
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
