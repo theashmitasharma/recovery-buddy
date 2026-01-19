@@ -10,7 +10,51 @@ import os
 from datetime import datetime
 
 # App version
-APP_VERSION = "1.0"
+APP_VERSION = "1.1"
+
+# Medical Sources for Citations
+MEDICAL_SOURCES = {
+    "asps": {
+        "name": "American Society of Plastic Surgeons",
+        "url": "https://www.plasticsurgery.org",
+        "abbrev": "ASPS"
+    },
+    "mayo": {
+        "name": "Mayo Clinic",
+        "url": "https://www.mayoclinic.org",
+        "abbrev": "Mayo Clinic"
+    },
+    "cleveland": {
+        "name": "Cleveland Clinic",
+        "url": "https://www.clevelandclinic.org",
+        "abbrev": "Cleveland Clinic"
+    },
+    "webmd": {
+        "name": "WebMD",
+        "url": "https://www.webmd.com",
+        "abbrev": "WebMD"
+    },
+    "realself": {
+        "name": "RealSelf",
+        "url": "https://www.realself.com",
+        "abbrev": "RealSelf"
+    }
+}
+
+def get_citation_html(source_keys, inline=True):
+    """Generate citation HTML for given source keys"""
+    if isinstance(source_keys, str):
+        source_keys = [source_keys]
+
+    citations = []
+    for key in source_keys:
+        if key in MEDICAL_SOURCES:
+            src = MEDICAL_SOURCES[key]
+            citations.append(f'<a href="{src["url"]}" target="_blank" style="color: #5A7A5A; text-decoration: none;">{src["abbrev"]}</a>')
+
+    if inline:
+        return f'<span class="citation-inline">Sources: {", ".join(citations)}</span>'
+    return citations
 
 # Page config with bloom favicon
 st.set_page_config(
@@ -1087,6 +1131,72 @@ st.markdown("""
         color: #5A7A5A;
     }
 
+    /* ===== CITATION STYLES ===== */
+    .citation-inline {
+        font-size: 0.75rem;
+        color: #6B8B6B;
+        font-style: italic;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .citation-inline a {
+        color: #5A7A5A;
+        text-decoration: underline;
+    }
+
+    .citation-inline a:hover {
+        color: #3D6B3D;
+    }
+
+    .citation-box {
+        background: linear-gradient(135deg, #F5F8F5 0%, #FDFBF7 100%);
+        border-left: 3px solid #A8C5A8;
+        padding: 0.75rem 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+        font-size: 0.8rem;
+    }
+
+    .citation-box a {
+        color: #5A7A5A;
+        text-decoration: none;
+    }
+
+    .citation-box a:hover {
+        text-decoration: underline;
+    }
+
+    .source-card {
+        background: #FFFFFF;
+        border: 1px solid #E8F0E8;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin: 0.75rem 0;
+        transition: box-shadow 0.2s ease;
+    }
+
+    .source-card:hover {
+        box-shadow: 0 4px 12px rgba(90, 122, 90, 0.1);
+    }
+
+    .source-card h3 {
+        color: #5A7A5A;
+        font-size: 1.1rem;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .source-card p {
+        color: #3D4D3D;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .source-card a {
+        color: #5A7A5A;
+        font-size: 0.85rem;
+    }
+
     /* ===== LEGAL PAGE STYLES ===== */
     .legal-page {
         background: linear-gradient(135deg, #FDFBF7 0%, #F8F5F0 100%);
@@ -1959,6 +2069,103 @@ def show_privacy_policy():
             st.rerun()
 
 
+def show_references():
+    """Display Medical References page"""
+    render_header()
+
+    st.markdown("""
+    <div class="legal-page">
+        <h1>📚 Medical References</h1>
+
+        <p style="text-align: center; margin-bottom: 1.5rem;">
+            The medical information in Recovery Buddy is compiled from the following credible healthcare sources.
+            Always consult with your healthcare provider for personalized medical advice.
+        </p>
+
+        <div class="warning-box" style="margin-bottom: 1.5rem;">
+            <p><strong>⚠️ Medical Disclaimer:</strong> Recovery Buddy provides general information for educational purposes only.
+            This app is not a substitute for professional medical advice, diagnosis, or treatment.
+            Always seek the advice of your surgeon or qualified healthcare provider with any questions about your recovery.</p>
+        </div>
+
+        <h2>Our Sources</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Source cards
+    sources_info = [
+        {
+            "key": "asps",
+            "icon": "🏥",
+            "description": "The largest plastic surgery specialty organization, providing patient safety information and procedural guidelines.",
+            "topics": "Procedure information, recovery timelines, safety guidelines"
+        },
+        {
+            "key": "mayo",
+            "icon": "🏛️",
+            "description": "World-renowned nonprofit medical center providing expert health information reviewed by medical professionals.",
+            "topics": "Symptoms, warning signs, general recovery guidance"
+        },
+        {
+            "key": "cleveland",
+            "icon": "💚",
+            "description": "Top-ranked hospital providing trusted health information backed by their medical experts.",
+            "topics": "Post-surgical care, pain management, healing timelines"
+        },
+        {
+            "key": "webmd",
+            "icon": "🌐",
+            "description": "Leading health information services platform with physician-reviewed content.",
+            "topics": "General recovery tips, symptom tracking, wellness guidance"
+        },
+        {
+            "key": "realself",
+            "icon": "✨",
+            "description": "Trusted community platform with doctor-verified information about cosmetic procedures.",
+            "topics": "Patient experiences, procedure-specific recovery, realistic expectations"
+        }
+    ]
+
+    for src_info in sources_info:
+        src = MEDICAL_SOURCES[src_info["key"]]
+        st.markdown(f"""
+        <div class="source-card">
+            <h3>{src_info['icon']} {src['name']}</h3>
+            <p>{src_info['description']}</p>
+            <p style="margin-top: 0.5rem;"><strong>Topics covered:</strong> {src_info['topics']}</p>
+            <a href="{src['url']}" target="_blank">Visit {src['abbrev']} →</a>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="legal-page" style="margin-top: 1.5rem;">
+        <h2>How We Use These Sources</h2>
+        <ul>
+            <li><strong>Recovery Timelines:</strong> Based on clinical guidelines from ASPS and Cleveland Clinic</li>
+            <li><strong>Normal Symptoms:</strong> Compiled from Mayo Clinic and WebMD patient education materials</li>
+            <li><strong>Warning Signs:</strong> Sourced from ASPS safety guidelines and Cleveland Clinic emergency criteria</li>
+            <li><strong>Daily Tips:</strong> Adapted from post-operative care instructions across all sources</li>
+            <li><strong>Emotional Support:</strong> Informed by Mayo Clinic mental health resources</li>
+        </ul>
+
+        <h2>Content Review</h2>
+        <p>Our recovery information is regularly reviewed and updated to ensure accuracy. Last content review: January 2026.</p>
+
+        <h2>Report an Issue</h2>
+        <p>If you notice any medical information that appears inaccurate or outdated, please contact us at
+        <a href="mailto:medical@recoverybuddy.app">medical@recoverybuddy.app</a>.</p>
+
+        <p class="last-updated">Last updated: January 2026</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("← Back to App", key="btn_back_from_references", type="primary", use_container_width=True):
+            st.session_state.step = 'welcome'
+            st.rerun()
+
+
 def main():
     # Show loading screen on first load
     if 'app_loaded' not in st.session_state:
@@ -2079,6 +2286,18 @@ def main():
         </p>
         """, unsafe_allow_html=True)
 
+        st.markdown("---")
+        st.markdown("### 📚 Medical Info")
+        st.markdown("""
+        <p style="font-size: 0.75rem; color: #666; line-height: 1.4;">
+        Information sourced from <strong>ASPS</strong>, <strong>Mayo Clinic</strong>,
+        <strong>Cleveland Clinic</strong>, <strong>WebMD</strong>, and <strong>RealSelf</strong>.
+        </p>
+        <p style="font-size: 0.75rem; color: #888; margin-top: 0.5rem;">
+        ⚠️ <em>This app provides general information only and is not a substitute for professional medical advice.</em>
+        </p>
+        """, unsafe_allow_html=True)
+
     # Render header and progress
     render_header()
     render_progress_bar()
@@ -2089,6 +2308,9 @@ def main():
         return
     elif st.session_state.step == 'privacy':
         show_privacy_policy()
+        return
+    elif st.session_state.step == 'references':
+        show_references()
         return
 
     # Main content
@@ -2376,6 +2598,14 @@ def show_symptom_results():
             </div>
             """, unsafe_allow_html=True)
 
+        st.markdown("""
+        <div class="citation-box">
+            📚 Symptom data from <a href="https://www.plasticsurgery.org" target="_blank">ASPS</a>,
+            <a href="https://www.realself.com" target="_blank">RealSelf</a>, and
+            <a href="https://www.webmd.com" target="_blank">WebMD</a>
+        </div>
+        """, unsafe_allow_html=True)
+
         # Peak swelling notice
         if day == procedure.get('peak_swelling_day'):
             st.markdown(f"""
@@ -2401,6 +2631,11 @@ def show_symptom_results():
                 <p style="color: #5A7A5A; font-size: 0.85rem; margin: 0 0 0.5rem 0; font-weight: 500;">Final Results</p>
                 <p style="color: #2D3A2D; font-size: 1.1rem; margin: 0; font-weight: 600;">{procedure['final_results']}</p>
             </div>
+        </div>
+        <div class="citation-box">
+            📚 Timeline data from <a href="https://www.plasticsurgery.org" target="_blank">ASPS</a>,
+            <a href="https://www.clevelandclinic.org" target="_blank">Cleveland Clinic</a>, and
+            <a href="https://www.realself.com" target="_blank">RealSelf</a>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2465,6 +2700,12 @@ def show_symptom_results():
             """, unsafe_allow_html=True)
             for sign in warning_signs:
                 st.markdown(f"<p style='color: #5C4813; margin: 0.25rem 0; padding-left: 1rem;'>⚠️ {sign}</p>", unsafe_allow_html=True)
+            st.markdown("""
+            <div class="citation-box">
+                📚 Warning signs from <a href="https://www.plasticsurgery.org" target="_blank">ASPS</a> and
+                <a href="https://www.mayoclinic.org" target="_blank">Mayo Clinic</a>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -2677,6 +2918,14 @@ def show_daily_tip():
             <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #2D4A2D;">Gentle walks prevent clots</p>
         </div>
         """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="citation-box">
+        📚 Recovery guidance from <a href="https://www.mayoclinic.org" target="_blank">Mayo Clinic</a>,
+        <a href="https://www.clevelandclinic.org" target="_blank">Cleveland Clinic</a>, and
+        <a href="https://www.webmd.com" target="_blank">WebMD</a>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -3175,14 +3424,18 @@ def show_complete():
 
     # Footer navigation links
     st.markdown("<div style='text-align: center; margin-top: 0.5rem;'>", unsafe_allow_html=True)
-    footer_cols = st.columns([2, 1, 1, 2])
+    footer_cols = st.columns([1, 1, 1, 1, 1])
     with footer_cols[1]:
-        if st.button("Terms of Service", key="footer_terms"):
+        if st.button("Terms", key="footer_terms"):
             st.session_state.step = 'terms'
             st.rerun()
     with footer_cols[2]:
-        if st.button("Privacy Policy", key="footer_privacy"):
+        if st.button("Privacy", key="footer_privacy"):
             st.session_state.step = 'privacy'
+            st.rerun()
+    with footer_cols[3]:
+        if st.button("References", key="footer_references"):
+            st.session_state.step = 'references'
             st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
