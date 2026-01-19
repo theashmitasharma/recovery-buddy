@@ -1875,6 +1875,132 @@ st.markdown("""
         color: #5C4813;
         margin: 0.5rem 0;
     }
+
+    /* ===== BOTTOM NAVIGATION BAR (MOBILE-STYLE) ===== */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF7 100%);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        padding: 8px 0 12px 0;
+        z-index: 9999;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid #E8F0E8;
+    }
+
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        min-width: 60px;
+    }
+
+    .bottom-nav-item:hover {
+        background: rgba(168, 197, 168, 0.15);
+    }
+
+    .bottom-nav-item.active {
+        background: rgba(168, 197, 168, 0.2);
+    }
+
+    .bottom-nav-icon {
+        font-size: 1.5rem;
+        margin-bottom: 2px;
+        transition: transform 0.2s ease;
+    }
+
+    .bottom-nav-item:hover .bottom-nav-icon {
+        transform: scale(1.1);
+    }
+
+    .bottom-nav-item.active .bottom-nav-icon {
+        transform: scale(1.15);
+    }
+
+    .bottom-nav-label {
+        font-size: 0.65rem;
+        font-weight: 500;
+        color: #888888;
+        text-align: center;
+        transition: color 0.2s ease;
+    }
+
+    .bottom-nav-item.active .bottom-nav-label {
+        color: #5A7A5A;
+        font-weight: 600;
+    }
+
+    .bottom-nav-item:hover .bottom-nav-label {
+        color: #5A7A5A;
+    }
+
+    /* Active indicator dot */
+    .bottom-nav-item.active::after {
+        content: '';
+        position: absolute;
+        bottom: 2px;
+        width: 4px;
+        height: 4px;
+        background: #A8C5A8;
+        border-radius: 50%;
+    }
+
+    /* Add padding to main content so it's not hidden behind nav */
+    .main .block-container {
+        padding-bottom: 100px !important;
+    }
+
+    /* Dark mode bottom nav */
+    .dark-mode .bottom-nav {
+        background: linear-gradient(180deg, #1E1E1E 0%, #121212 100%);
+        border-top: 1px solid #333333;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark-mode .bottom-nav-label {
+        color: #888888;
+    }
+
+    .dark-mode .bottom-nav-item.active .bottom-nav-label {
+        color: #A8C5A8;
+    }
+
+    .dark-mode .bottom-nav-item:hover {
+        background: rgba(168, 197, 168, 0.1);
+    }
+
+    /* Hide default Streamlit bottom padding */
+    .stApp > header + div {
+        padding-bottom: 80px;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+        .bottom-nav {
+            padding: 6px 0 10px 0;
+        }
+        .bottom-nav-icon {
+            font-size: 1.3rem;
+        }
+        .bottom-nav-label {
+            font-size: 0.6rem;
+        }
+        .bottom-nav-item {
+            min-width: 50px;
+            padding: 4px 8px;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -2521,6 +2647,107 @@ def render_progress_bar():
                 """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
+
+
+def render_bottom_nav():
+    """Render mobile-style bottom navigation bar"""
+    current_step = st.session_state.get('step', 'welcome')
+
+    # Define navigation items
+    nav_items = [
+        {"icon": "🏠", "label": "Home", "step": "welcome"},
+        {"icon": "📊", "label": "Progress", "step": "dashboard"},
+        {"icon": "✅", "label": "Check-in", "step": "get_info"},
+        {"icon": "😊", "label": "Mood", "step": "mood_tracker"},
+        {"icon": "⚙️", "label": "Settings", "step": "settings"},
+    ]
+
+    # Map current step to nav item for highlighting
+    # Some steps share the same nav item
+    step_to_nav = {
+        "welcome": "welcome",
+        "dashboard": "dashboard",
+        "get_info": "get_info",
+        "physical_checkin": "get_info",
+        "symptom_results": "get_info",
+        "emotional_checkin": "get_info",
+        "daily_tip": "get_info",
+        "complete": "get_info",
+        "mood_tracker": "mood_tracker",
+        "self_care": "mood_tracker",
+        "settings": "settings",
+        "about": "settings",
+        "surgery_resources": "dashboard",
+        "faq": "dashboard",
+        "symptom_checker": "get_info",
+        "emergency_contacts": "settings",
+    }
+
+    active_nav = step_to_nav.get(current_step, "welcome")
+
+    # Build the navigation HTML
+    nav_html = '<div class="bottom-nav">'
+
+    for item in nav_items:
+        is_active = "active" if item["step"] == active_nav else ""
+        nav_html += f'''
+        <div class="bottom-nav-item {is_active}" id="nav-{item['step']}">
+            <span class="bottom-nav-icon">{item['icon']}</span>
+            <span class="bottom-nav-label">{item['label']}</span>
+        </div>
+        '''
+
+    nav_html += '</div>'
+
+    st.markdown(nav_html, unsafe_allow_html=True)
+
+    # Use Streamlit columns for actual navigation buttons (invisible but functional)
+    # This is a workaround since we can't use onclick in the HTML
+    st.markdown("""
+    <style>
+    .bottom-nav-buttons {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 70px;
+        z-index: 10000;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: transparent;
+    }
+    .bottom-nav-buttons .stButton {
+        flex: 1;
+        max-width: 20%;
+    }
+    .bottom-nav-buttons .stButton > button {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100%;
+        height: 60px;
+        color: transparent !important;
+        padding: 0 !important;
+    }
+    .bottom-nav-buttons .stButton > button:hover {
+        background: transparent !important;
+        border: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Create invisible button overlay
+    with st.container():
+        st.markdown('<div class="bottom-nav-buttons">', unsafe_allow_html=True)
+        cols = st.columns(5)
+        for i, item in enumerate(nav_items):
+            with cols[i]:
+                if st.button(" ", key=f"bottom_nav_{item['step']}", help=item['label']):
+                    st.session_state.step = item['step']
+                    st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_header():
@@ -3855,6 +4082,29 @@ def main():
         .stCheckbox label, .stToggle label {
             color: #E0E0E0 !important;
         }
+
+        /* Bottom navigation dark mode */
+        .bottom-nav {
+            background: linear-gradient(180deg, #1E1E1E 0%, #121212 100%) !important;
+            border-top: 1px solid #333333 !important;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .bottom-nav-label {
+            color: #888888 !important;
+        }
+
+        .bottom-nav-item.active .bottom-nav-label {
+            color: #A8C5A8 !important;
+        }
+
+        .bottom-nav-item:hover {
+            background: rgba(168, 197, 168, 0.1) !important;
+        }
+
+        .bottom-nav-item.active {
+            background: rgba(168, 197, 168, 0.15) !important;
+        }
         </style>
         """, unsafe_allow_html=True)
 
@@ -4032,6 +4282,9 @@ def main():
         show_self_care()
     elif st.session_state.step == 'mood_tracker':
         show_mood_tracker()
+
+    # Render bottom navigation bar (mobile-style)
+    render_bottom_nav()
 
 
 def show_welcome():
