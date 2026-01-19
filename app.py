@@ -1791,11 +1791,12 @@ st.markdown("""
         margin: 1rem 0;
         border-radius: 0 8px 8px 0;
         font-size: 0.8rem;
+        color: #333333 !important;
     }
 
     .citation-box a {
-        color: #5A7A5A;
-        text-decoration: none;
+        color: #0066CC !important;
+        text-decoration: underline;
     }
 
     .citation-box a:hover {
@@ -4966,7 +4967,7 @@ def show_welcome():
             st.session_state.mood_history.append(mood_entry)
             st.session_state.progress_data['mood_history'] = st.session_state.mood_history
             save_progress(st.session_state.progress_data)
-            st.toast(f"Mood logged: {emoji} {label}")
+            st.success(f"✅ Mood logged: {emoji} {label}")
 
     st.divider()
 
