@@ -1223,6 +1223,20 @@ st.markdown("""
         background: var(--sage-light) !important;
     }
 
+    /* Danger buttons - destructive actions */
+    .danger-btn button,
+    .danger-btn .stButton > button {
+        background: linear-gradient(135deg, #E53935 0%, #C62828 100%) !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .danger-btn button:hover,
+    .danger-btn .stButton > button:hover {
+        background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%) !important;
+        box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4) !important;
+    }
+
     /* Input fields */
     .stTextInput > div > div > input {
         background: var(--white) !important;
@@ -3181,8 +3195,10 @@ def show_dashboard():
             st.session_state.show_export = True
 
     with col3:
-        if st.button("🗑️ Clear All Data", key="dash_clear", use_container_width=True, type="secondary"):
+        st.markdown('<div class="danger-btn">', unsafe_allow_html=True)
+        if st.button("🗑️ Clear All Data", key="dash_clear", use_container_width=True):
             st.session_state.show_clear_confirm = True
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # Export data section
     if st.session_state.get('show_export', False):
@@ -3247,7 +3263,8 @@ def show_dashboard():
                 st.session_state.show_clear_confirm = False
                 st.rerun()
         with confirm_col2:
-            if st.button("🗑️ Yes, Delete Everything", key="confirm_clear", use_container_width=True, type="primary"):
+            st.markdown('<div class="danger-btn">', unsafe_allow_html=True)
+            if st.button("🗑️ Yes, Delete Everything", key="confirm_clear", use_container_width=True):
                 # Clear all data
                 st.session_state.progress_data = {}
                 st.session_state.user_data = {}
@@ -3265,13 +3282,7 @@ def show_dashboard():
                 st.success("All data has been cleared.")
                 st.session_state.step = 'welcome'
                 st.rerun()
-
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    # Home button
-    if st.button("🏠 Back to Home", key="dash_home", use_container_width=True):
-        st.session_state.step = 'welcome'
-        st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
 
 def show_about():
@@ -3398,14 +3409,17 @@ def show_settings():
 
         st.markdown("##### Data Management:")
 
-        if st.button("🗑️ Clear All My Data", key="clear_data", type="secondary", use_container_width=True):
+        st.markdown('<div class="danger-btn">', unsafe_allow_html=True)
+        if st.button("🗑️ Clear All My Data", key="clear_data", use_container_width=True):
             st.session_state.show_clear_confirm = True
+        st.markdown('</div>', unsafe_allow_html=True)
 
         if st.session_state.get('show_clear_confirm', False):
             st.warning("⚠️ This will permanently delete all your saved data. This cannot be undone.")
             confirm_col1, confirm_col2 = st.columns(2)
             with confirm_col1:
-                if st.button("Yes, Delete Everything", key="confirm_delete", type="primary"):
+                st.markdown('<div class="danger-btn">', unsafe_allow_html=True)
+                if st.button("Yes, Delete Everything", key="confirm_delete"):
                     # Clear all data
                     st.session_state.progress_data = {}
                     st.session_state.user_data = {}
@@ -3421,19 +3435,12 @@ def show_settings():
                         os.remove(PROGRESS_FILE)
                     st.success("✅ All data cleared!")
                     st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
             with confirm_col2:
                 if st.button("Cancel", key="cancel_delete"):
                     st.session_state.show_clear_confirm = False
                     st.rerun()
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    # Home button
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🏠 Back to Home", key="settings_home", type="primary", use_container_width=True):
-            st.session_state.step = 'welcome'
-            st.rerun()
 
 
 def show_surgery_resources():
@@ -3462,11 +3469,6 @@ def show_surgery_resources():
             for link in proc_info['links']:
                 st.markdown(f"- [{link['source']}]({link['url']})")
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    if st.button("🏠 Back to Home", key="resources_home", use_container_width=True):
-        st.session_state.step = 'welcome'
-        st.rerun()
 
 
 def show_faq():
@@ -3494,11 +3496,6 @@ def show_faq():
             st.markdown(faq['answer'])
             st.markdown(f"*Source: {faq['source']}*")
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    if st.button("🏠 Back to Home", key="faq_home", use_container_width=True):
-        st.session_state.step = 'welcome'
-        st.rerun()
 
 
 def show_symptom_checker_page():
@@ -3575,17 +3572,11 @@ def show_symptom_checker_page():
         </p>
         """, unsafe_allow_html=True)
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+    st.divider()
 
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🏠 Back to Home", key="symptom_home", use_container_width=True):
-            st.session_state.step = 'welcome'
-            st.rerun()
-    with col2:
-        if st.button("📞 Emergency Contacts", key="symptom_emergency", use_container_width=True):
-            st.session_state.step = 'emergency_contacts'
-            st.rerun()
+    if st.button("📞 Emergency Contacts", key="symptom_emergency", use_container_width=True):
+        st.session_state.step = 'emergency_contacts'
+        st.rerun()
 
 
 def show_emergency_contacts():
@@ -3638,11 +3629,6 @@ def show_emergency_contacts():
         </a>
         """, unsafe_allow_html=True)
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    if st.button("🏠 Back to Home", key="emergency_home", use_container_width=True):
-        st.session_state.step = 'welcome'
-        st.rerun()
 
 
 def show_self_care():
@@ -3707,11 +3693,6 @@ def show_self_care():
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    if st.button("🏠 Back to Home", key="selfcare_home", use_container_width=True):
-        st.session_state.step = 'welcome'
-        st.rerun()
 
 
 def show_mood_tracker():
@@ -3767,11 +3748,6 @@ def show_mood_tracker():
         for entry in reversed(st.session_state.mood_history[-7:]):
             st.markdown(f"{entry['emoji']} **{entry['date']}** - {entry['mood']}")
 
-    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-
-    if st.button("🏠 Back to Home", key="mood_home", use_container_width=True):
-        st.session_state.step = 'welcome'
-        st.rerun()
 
 
 def main():
