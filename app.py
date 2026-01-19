@@ -202,6 +202,64 @@ st.markdown("""
         --shadow-hover: rgba(61, 74, 61, 0.12);
     }
 
+    /* ===== CRITICAL: ENSURE ALL TEXT IS DARK AND READABLE ===== */
+
+    /* Global dark text for content elements */
+    .main p, .main span, .main li, .main td, .main th, .main label {
+        color: #333333;
+    }
+
+    /* Headers always dark green */
+    .main h1, .main h2, .main h3, .main h4, .main h5, .main h6 {
+        color: #2C5530 !important;
+    }
+
+    /* Subtext and captions slightly lighter */
+    .stat-label, small, .caption, .subtext {
+        color: #666666 !important;
+    }
+
+    /* Links should be blue and clickable */
+    a:not(button):not(.stButton a) {
+        color: #0066CC !important;
+        text-decoration: underline !important;
+    }
+
+    a:not(button):not(.stButton a):hover {
+        color: #004499 !important;
+    }
+
+    /* Ensure markdown text is dark */
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] span:not(.st-emotion-cache-10trblm),
+    [data-testid="stMarkdownContainer"] li {
+        color: #333333 !important;
+    }
+
+    [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stMarkdownContainer"] h3,
+    [data-testid="stMarkdownContainer"] h4 {
+        color: #2C5530 !important;
+    }
+
+    /* EXCEPTIONS: White text on dark backgrounds */
+    .stButton > button,
+    .stButton > button span,
+    .stButton > button p {
+        color: white !important;
+    }
+
+    /* Step circles with white text */
+    .step-circle.completed {
+        color: white !important;
+    }
+
+    /* Emergency banner red text */
+    .emergency-banner p {
+        color: #C0392B !important;
+    }
+
     /* ===== WIDE LAYOUT & RESPONSIVE DESIGN ===== */
 
     /* Max width container for readability */
@@ -257,12 +315,12 @@ st.markdown("""
     .stat-card .stat-value {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #5A7A5A;
+        color: #2C5530 !important;
     }
 
     .stat-card .stat-label {
         font-size: 0.85rem;
-        color: #6B8B6B;
+        color: #555555 !important;
         margin-top: 0.25rem;
     }
 
@@ -740,6 +798,11 @@ st.markdown("""
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        color: #2C5530 !important;
+    }
+
+    .wellness-card p {
+        color: #333333 !important;
     }
 
     /* Info boxes with gradients */
@@ -1350,20 +1413,22 @@ st.markdown("""
     }
 
     .source-card h3 {
-        color: #5A7A5A;
+        color: #2C5530 !important;
         font-size: 1.1rem;
         margin: 0 0 0.5rem 0;
     }
 
     .source-card p {
-        color: #3D4D3D;
+        color: #333333 !important;
         font-size: 0.9rem;
         margin: 0;
     }
 
     .source-card a {
-        color: #5A7A5A;
-        font-size: 0.85rem;
+        color: #0066CC !important;
+        font-size: 0.9rem;
+        text-decoration: underline !important;
+        word-break: break-all;
     }
 
     /* ===== LEGAL PAGE STYLES ===== */
@@ -1376,7 +1441,7 @@ st.markdown("""
     }
 
     .legal-page h1 {
-        color: #5A7A5A;
+        color: #2C5530 !important;
         font-family: 'Playfair Display', Georgia, serif;
         font-size: 1.8rem;
         margin-bottom: 1.5rem;
@@ -1384,7 +1449,7 @@ st.markdown("""
     }
 
     .legal-page h2 {
-        color: #5A7A5A;
+        color: #2C5530 !important;
         font-family: 'Playfair Display', Georgia, serif;
         font-size: 1.2rem;
         margin-top: 1.5rem;
@@ -1392,9 +1457,14 @@ st.markdown("""
     }
 
     .legal-page p, .legal-page li {
-        color: #3D4D3D;
+        color: #333333 !important;
         font-size: 0.9rem;
         line-height: 1.7;
+    }
+
+    .legal-page a {
+        color: #0066CC !important;
+        text-decoration: underline !important;
     }
 
     .legal-page ul {
