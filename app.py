@@ -4527,13 +4527,16 @@ def show_symptom_results():
     st.markdown("""
     <div class="consult-doctor-reminder">
         👩‍⚕️ <strong>Remember:</strong> Always consult your surgeon if you have concerns about your symptoms.
-        <a href="#" onclick="return false;">View Medical Sources</a>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
+    with col1:
+        if st.button("📚 Medical Sources", key="btn_sources_symptom", use_container_width=True):
+            st.session_state.step = 'references'
+            st.rerun()
     with col2:
         if st.button("Continue to Emotional Check-In", key="btn_emotional", type="primary", use_container_width=True):
             st.session_state.step = 'emotional_checkin'
