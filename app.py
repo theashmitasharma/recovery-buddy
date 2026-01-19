@@ -474,7 +474,7 @@ st.markdown("""
 
     /* Global dark text for content elements */
     .main p, .main span, .main li, .main td, .main th, .main label {
-        color: #333333;
+        color: #333333 !important;
     }
 
     /* Headers always dark green */
@@ -482,9 +482,18 @@ st.markdown("""
         color: #2C5530 !important;
     }
 
-    /* Subtext and captions slightly lighter */
+    /* Subtext and captions - MUST BE DARK */
     .stat-label, small, .caption, .subtext {
-        color: #666666 !important;
+        color: #555555 !important;
+    }
+
+    /* Streamlit caption elements - MUST BE DARK */
+    [data-testid="stCaptionContainer"],
+    [data-testid="stCaptionContainer"] p,
+    [data-testid="stCaptionContainer"] span,
+    .stCaption,
+    [class*="caption"] {
+        color: #555555 !important;
     }
 
     /* Links should be blue and clickable */
@@ -1606,23 +1615,23 @@ st.markdown("""
 
     .version-text {
         font-size: 0.7rem;
-        color: #8B9B8B;
+        color: #555555;
     }
 
     .copyright-text {
         font-size: 0.75rem;
-        color: #9B9B9B;
+        color: #555555;
         margin-top: 1.5rem;
         line-height: 1.6;
     }
 
     .copyright-text a {
-        color: #9B9B9B;
+        color: #3D6B3D;
         text-decoration: underline;
     }
 
     .copyright-text a:hover {
-        color: #5A7A5A;
+        color: #2C5530;
     }
 
     /* ===== DISCLAIMER MODAL STYLES ===== */
@@ -1822,7 +1831,7 @@ st.markdown("""
 
     .legal-page .last-updated {
         font-size: 0.8rem;
-        color: #8B9B8B;
+        color: #555555;
         text-align: center;
         margin-top: 2rem;
     }
@@ -1832,14 +1841,14 @@ st.markdown("""
     }
 
     .footer-legal-links a {
-        color: #9B9B9B;
+        color: #555555;
         text-decoration: none;
         font-size: 0.75rem;
         margin: 0 0.5rem;
     }
 
     .footer-legal-links a:hover {
-        color: #5A7A5A;
+        color: #2C5530;
         text-decoration: underline;
     }
 
@@ -1848,7 +1857,7 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"]:has(button[key*="footer"]) button {
         background: transparent !important;
         border: none !important;
-        color: #9B9B9B !important;
+        color: #555555 !important;
         font-size: 0.75rem !important;
         padding: 0.25rem 0.5rem !important;
         text-decoration: underline !important;
@@ -1856,7 +1865,7 @@ st.markdown("""
     }
 
     div[data-testid="stHorizontalBlock"]:has(button[key*="footer"]) button:hover {
-        color: #5A7A5A !important;
+        color: #2C5530 !important;
         background: transparent !important;
     }
 
@@ -1931,18 +1940,18 @@ st.markdown("""
     .bottom-nav-label {
         font-size: 0.65rem;
         font-weight: 500;
-        color: #888888;
+        color: #555555;
         text-align: center;
         transition: color 0.2s ease;
     }
 
     .bottom-nav-item.active .bottom-nav-label {
-        color: #5A7A5A;
+        color: #2C5530;
         font-weight: 600;
     }
 
     .bottom-nav-item:hover .bottom-nav-label {
-        color: #5A7A5A;
+        color: #2C5530;
     }
 
     /* Active indicator dot */
@@ -3112,7 +3121,7 @@ def show_dashboard():
             for key, entry in reversed(journal_entries):
                 st.markdown(f"""
                 <div style="background: #FFF9F0; border-left: 4px solid #E8B4BC; border-radius: 0 8px 8px 0; padding: 1rem; margin: 0.5rem 0;">
-                    <p style="font-size: 0.8rem; color: #8B9B8B; margin: 0 0 0.5rem 0;">Entry: {key}</p>
+                    <p style="font-size: 0.8rem; color: #555555; margin: 0 0 0.5rem 0;">Entry: {key}</p>
                     <p style="color: #2D3A2D; margin: 0; white-space: pre-wrap;">{entry}</p>
                 </div>
                 """, unsafe_allow_html=True)
@@ -4108,7 +4117,7 @@ def main():
 
         st.markdown("---")
         st.markdown("""
-        <p style="font-size: 0.8rem; color: #666;">
+        <p style="font-size: 0.8rem; color: #444;">
         💚 <strong>Your Surgeon's Office:</strong><br>
         <em>Add your surgeon's contact info here</em>
         </p>
@@ -4117,11 +4126,11 @@ def main():
         st.markdown("---")
         st.markdown("### 📚 Medical Info")
         st.markdown("""
-        <p style="font-size: 0.75rem; color: #666; line-height: 1.4;">
+        <p style="font-size: 0.75rem; color: #444; line-height: 1.4;">
         Information sourced from <strong>ASPS</strong>, <strong>Mayo Clinic</strong>,
         <strong>Cleveland Clinic</strong>, <strong>WebMD</strong>, and <strong>RealSelf</strong>.
         </p>
-        <p style="font-size: 0.75rem; color: #888; margin-top: 0.5rem;">
+        <p style="font-size: 0.75rem; color: #555; margin-top: 0.5rem;">
         ⚠️ <em>This app provides general information only and is not a substitute for professional medical advice.</em>
         </p>
         """, unsafe_allow_html=True)
@@ -5239,7 +5248,7 @@ def show_complete():
             <p style="color: #2D3A2D; font-size: 1.1rem; font-style: italic; margin: 0.5rem 0 0 0;">
                 "{today_prompt['prompt']}"
             </p>
-            <p style="color: #8B9B8B; font-size: 0.75rem; margin-top: 0.5rem;">
+            <p style="color: #555555; font-size: 0.75rem; margin-top: 0.5rem;">
                 <em>Prompts rotate randomly • {len(JOURNALING_PROMPTS)} prompts available</em>
             </p>
         </div>
@@ -5354,7 +5363,7 @@ def show_complete():
 
     # Medical review date
     st.markdown(f"""
-    <p style="text-align: center; color: #8B9B8B; font-size: 0.75rem; margin-top: 0.5rem;">
+    <p style="text-align: center; color: #555555; font-size: 0.75rem; margin-top: 0.5rem;">
         📚 Medical information last reviewed: {LAST_MEDICAL_REVIEW} • 🔒 Data stored locally
     </p>
     """, unsafe_allow_html=True)
