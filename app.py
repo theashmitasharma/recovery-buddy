@@ -652,6 +652,37 @@ st.markdown("""
         font-size: 1rem !important;
     }
 
+    /* Hide any raw text fallback for icons (like _arrow_right_) */
+    [data-testid="stExpander"] summary span[data-testid] {
+        font-size: 0 !important;
+    }
+
+    [data-testid="stExpander"] summary span[data-testid]::before {
+        content: "▶" !important;
+        font-size: 0.8rem !important;
+    }
+
+    [data-testid="stExpander"][open] summary span[data-testid]::before {
+        content: "▼" !important;
+    }
+
+    /* Hide Streamlit internal icon text like :material/arrow: */
+    [data-testid="stExpanderToggleIcon"] {
+        font-size: 0 !important;
+        width: 1rem !important;
+        height: 1rem !important;
+    }
+
+    [data-testid="stExpanderToggleIcon"]::before {
+        content: "▶" !important;
+        font-size: 0.8rem !important;
+        display: block !important;
+    }
+
+    details[open] [data-testid="stExpanderToggleIcon"]::before {
+        content: "▼" !important;
+    }
+
     /* Input elements - white background, dark text */
     .stTextInput input,
     .stNumberInput input,
@@ -4911,25 +4942,31 @@ def show_welcome():
         st.subheader(f"{daily_tip['icon']} Tip of the Day")
         st.warning(daily_tip['tip'])
 
-        # Quick mood check
+        # Quick mood check using radio buttons
         st.subheader("😊 Quick Mood Check")
-        st.write("How are you feeling right now?")
-        mood_cols = st.columns(4)
-        moods = [("😢", "Struggling"), ("😐", "Okay"), ("🙂", "Good"), ("😊", "Great")]
-        for i, (emoji, label) in enumerate(moods):
-            with mood_cols[i]:
-                if st.button(emoji, key=f"quick_mood_{label}", help=label, use_container_width=True):
-                    # Save quick mood
-                    mood_entry = {
-                        'date': datetime.now().strftime('%Y-%m-%d'),
-                        'time': datetime.now().strftime('%H:%M'),
-                        'mood': label,
-                        'emoji': emoji
-                    }
-                    st.session_state.mood_history.append(mood_entry)
-                    st.session_state.progress_data['mood_history'] = st.session_state.mood_history
-                    save_progress(st.session_state.progress_data)
-                    st.toast(f"Mood logged: {emoji} {label}")
+        mood_options = ["😢 Struggling", "😐 Okay", "🙂 Good", "😊 Great"]
+        selected_mood = st.radio(
+            "How are you feeling right now?",
+            options=mood_options,
+            horizontal=True,
+            key="quick_mood_radio",
+            label_visibility="collapsed"
+        )
+
+        if st.button("Log Mood", key="log_mood_btn", type="primary"):
+            # Parse the selection
+            emoji = selected_mood.split()[0]
+            label = selected_mood.split()[1]
+            mood_entry = {
+                'date': datetime.now().strftime('%Y-%m-%d'),
+                'time': datetime.now().strftime('%H:%M'),
+                'mood': label,
+                'emoji': emoji
+            }
+            st.session_state.mood_history.append(mood_entry)
+            st.session_state.progress_data['mood_history'] = st.session_state.mood_history
+            save_progress(st.session_state.progress_data)
+            st.toast(f"Mood logged: {emoji} {label}")
 
     st.divider()
 
@@ -5398,18 +5435,26 @@ def show_emotional_checkin():
             </div>
             """, unsafe_allow_html=True)
 
-        # Universal reminders
-        st.markdown("""
-        <div class="tip-card">
-            <h4>Gentle Reminders</h4>
-            <p style="line-height: 1.8;">
-                🌸 Swelling distorts your results - don't judge what you see right now<br>
-                🦋 Comparison is the thief of joy - everyone heals differently<br>
-                📱 It's okay to limit social media and 'transformation' photos<br>
-                💕 Reach out to friends, family, or your surgeon if you're struggling
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+        # Universal reminders - rotate randomly
+        import random
+        all_reminders = [
+            "🌸 Swelling distorts your results - don't judge what you see right now",
+            "🦋 Comparison is the thief of joy - everyone heals differently",
+            "📱 It's okay to limit social media and 'transformation' photos",
+            "💕 Reach out to friends, family, or your surgeon if you're struggling",
+            "🌱 Healing takes time - be patient with yourself",
+            "💚 Your body is working hard to heal",
+            "🌙 Rest is productive - don't feel guilty",
+            "☀️ Small progress is still progress",
+            "🌷 Trust the process - your body knows how to heal",
+            "💜 It's okay to have emotional ups and downs during recovery",
+        ]
+        # Show 4 random reminders each time
+        selected_reminders = random.sample(all_reminders, 4)
+
+        st.markdown("#### Gentle Reminders")
+        for reminder in selected_reminders:
+            st.write(reminder)
 
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
@@ -5633,32 +5678,6 @@ def show_daily_tip():
         st.session_state.celebration_shown = False
         st.progress(completion_pct / 100)
         st.markdown(f"<p style='text-align: center; color: #3D4D3D;'>{completed_tasks}/{total_tasks} tasks completed ({completion_pct}%)</p>", unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ===== COMMUNITY QUOTES =====
-    st.markdown("#### 💬 From Others Who've Been There")
-
-    # Get relevant quotes (matching procedure or "any")
-    relevant_quotes = [q for q in COMMUNITY_QUOTES
-                      if q["procedure"] == procedure_key or q["procedure"] == "any"]
-    # Prefer quotes from similar recovery day
-    import random
-    sorted_quotes = sorted(relevant_quotes, key=lambda q: abs(q["day"] - day))
-    display_quote = sorted_quotes[0] if sorted_quotes else random.choice(COMMUNITY_QUOTES)
-
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #F5F0E8 0%, #FFFFFF 100%);
-                border-radius: 16px; padding: 1.5rem; margin: 1rem 0;
-                border-left: 4px solid #A8C5A8;">
-        <p style="font-style: italic; font-size: 1.1rem; color: #2D3A2D; margin: 0;">
-            "{display_quote['quote']}"
-        </p>
-        <p style="color: #5C6B5C; font-size: 0.85rem; margin: 0.75rem 0 0 0;">
-            — Anonymous, Day {display_quote['day']} Recovery
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
