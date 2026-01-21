@@ -10,6 +10,21 @@ import os
 from datetime import datetime, timedelta
 import random
 
+# Hide Streamlit branding for professional appearance
+st.markdown("""
+<style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .stDeployButton {display: none;}
+    [data-testid="stToolbar"] {display: none;}
+    [data-testid="stDecoration"] {display: none;}
+    [data-testid="stStatusWidget"] {display: none;}
+    .viewerBadge_container__1QSob {display: none;}
+    .styles_viewerBadge__1yB5_ {display: none;}
+</style>
+""", unsafe_allow_html=True)
+
 # App version
 APP_VERSION = "2.0.0"
 APP_CREATOR = "Ashmita Sharma"
