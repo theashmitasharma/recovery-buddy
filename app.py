@@ -10,6 +10,9 @@ import os
 from datetime import datetime, timedelta
 import random
 
+# Page config must be first Streamlit command
+st.set_page_config(page_title="My Recovery Buddy", page_icon="🌸", layout="wide")
+
 # Hide Streamlit branding for professional appearance
 st.markdown("""
 <style>
@@ -22,6 +25,9 @@ st.markdown("""
     [data-testid="stStatusWidget"] {display: none;}
     .viewerBadge_container__1QSob {display: none;}
     .styles_viewerBadge__1yB5_ {display: none;}
+    #stStreamlitLogo {display: none;}
+    .css-1rs6os {display: none;}
+    .css-17ziqus {display: none;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -340,14 +346,6 @@ def get_citation_html(source_keys, inline=True):
     if inline:
         return f'<span class="citation-inline">Sources: {", ".join(citations)}</span>'
     return citations
-
-# Page config with bloom favicon - WIDE LAYOUT for better use of space
-st.set_page_config(
-    page_title="Recovery Buddy",
-    page_icon="logos/favicon_bloom.svg",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
 
 # ============================================
 # GOOGLE ANALYTICS
